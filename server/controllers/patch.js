@@ -7,6 +7,7 @@ const { ObjectId } = require('mongodb');
 const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
+const { ClientErrors } = require('../utils/errors.js');
 
 router.patch(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
     try {
@@ -14,7 +15,7 @@ router.patch(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req,
         const update = req.body;
 
         if (!ObjectId.isValid(_id))
-            throw new Error('Invalid _id field');
+            throw new Error(ClientErrors.INVALID_ID);
 
         const collection = mongoose.model(req.params.collection, CommonSchema);
         const document = await collection.findOneAndUpdate({ _id }, {...req.body} , { new: true, useFindAndModify: false });

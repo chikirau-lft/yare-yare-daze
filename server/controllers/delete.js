@@ -7,13 +7,14 @@ const { ObjectId } = require('mongodb');
 const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
+const { ClientErrors } = require('../utils/errors.js');
 
 router.delete(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
     try {
         const _id = req.params._id;
 
         if (!ObjectId.isValid(_id))
-            throw new Error('Invalid _id field');
+            throw new Error(ClientErrors.INVALID_ID);
 
         const collection = mongoose.model(req.params.collection, CommonSchema);
         const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });

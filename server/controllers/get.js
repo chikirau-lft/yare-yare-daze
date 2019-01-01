@@ -8,6 +8,7 @@ const { ObjectId } = require('mongodb');
 const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
+const { ClientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { arrayToObject } = require('../utils/utils.js');
 
@@ -44,7 +45,6 @@ router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) =
 
         return res.send(response);
     } catch(e) {
-        console.log(e.message);
         return res.status(400).send({
             statusCode: 400,
             ERROR: e.message
@@ -57,7 +57,7 @@ router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, r
         const _id = req.params._id;
 
         if (!ObjectId.isValid(_id))
-            throw new Error('Invalid _id field');
+            throw new Error(ClientErrors.INVALID_ID);
 
         const Collection = mongoose.model(req.params.collection, CommonSchema);
         const document = await Collection.findOne({ _id });
