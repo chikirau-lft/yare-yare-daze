@@ -16,7 +16,7 @@ router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) =
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_FILTER;
         const sort = req.query.sort !== undefined 
-            ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_SORT;
+            ? JSON.parse(_.replace(req.query.sort, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_SORT;
 
         const pagesize = req.query.pagesize === undefined || +req.query.pagesize > +process.env.MAX_PAGESIZE 
             ? +process.env.DEFAULT_PAGESIZE : +req.query.pagesize;
@@ -44,6 +44,7 @@ router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) =
 
         return res.send(response);
     } catch(e) {
+        console.log(e.message);
         return res.status(400).send({
             statusCode: 400,
             ERROR: e.message

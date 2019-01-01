@@ -5,13 +5,13 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const { ObjectID } = require('mongodb');
 
-const { app } = require('../../app.js');
+const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
 
 const { items } = require('../../seed/seed.tests.js');
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
+describe(`GET /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
 
     beforeEach(async() => {
         let collection = mongoose.model(testCollection, CommonSchema);
@@ -21,7 +21,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return all process.env.DEFAULT_PAGESIZE n documents if no params is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
@@ -39,7 +39,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return filtered documents if filter param is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[0].ID}"}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[0].ID}"}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID).length);
@@ -56,7 +56,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return 400 if filter param is invalid JSON string', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={ ID': '${items[0].ID}'`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={ ID': '${items[0].ID}'`)
             .expect(400)
             .expect(res => {
                 expect(res.body).toMatchObject({ statusCode: 400 });
@@ -66,7 +66,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return sorted documents if sort param is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[2].ID}"}&sort={"_id": -1}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[2].ID}"}&sort={"_id": -1}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[2].ID).length);
@@ -84,7 +84,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return 400 if sort param is invalid JSON string', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?sort={_id": -1}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?sort={_id": -1}`)
             .expect(400)
             .expect(res => {
                 expect(res.body).toMatchObject({ statusCode: 400 });
@@ -94,7 +94,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return certain number of documents if pagesize param is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[2].ID}"}&sort={"_id": -1}&pagesize=2`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[2].ID}"}&sort={"_id": -1}&pagesize=2`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(2);
@@ -113,7 +113,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return default number of documents if pagesize params if over max', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=9`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=9`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
@@ -133,7 +133,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
         const page = 2;
 
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=${pagesize}&page=${page}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=${pagesize}&page=${page}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(3);
@@ -150,7 +150,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return properties if count param is true', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?&count=true`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?&count=true`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
@@ -168,7 +168,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return only certain fields if keys param is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[0].ID}"}&keys={"TS": 1}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[0].ID}"}&keys={"TS": 1}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID).length);
@@ -188,7 +188,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return only certain fields if keys param is specified as an array', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[0].ID}"}&keys={"TS": 1}&keys={"ID": 1}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[0].ID}"}&keys={"TS": 1}&keys={"ID": 1}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID).length);
@@ -208,7 +208,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should hide properties if np param is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[0].ID}"}&np`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[0].ID}"}&np`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(undefined);
@@ -227,7 +227,7 @@ describe(`GET ${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return empty JSON array if invalid collection is specified', done => {
         request(app)
-            .get(`/${process.env.MONGO_DATABASE}/col?filter={ "ID": "${items[0].ID}"}`)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/col?filter={ "ID": "${items[0].ID}"}`)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(0);
