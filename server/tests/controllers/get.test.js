@@ -246,8 +246,8 @@ describe(`GET /mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
             .expect(res => {
                 expect(res.body).toEqual(
                     items
-                        .filter(item => item.ID === items[0].ID)
-                        .map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+                        .filter(item => item._id === items[0]._id)
+                        .map(item => Object.assign({}, item, { _id: item._id.toHexString() }))[0]
                 );
             })
             .end(done);
