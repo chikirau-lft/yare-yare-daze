@@ -6,3 +6,6 @@
 
 # https sertificate
 /sertificates
+
+# app logs
+logs.txt
