@@ -237,3 +237,33 @@ describe(`GET /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
             .end(done);
     });
 });
+
+describe(`GET /mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
+    it('should return document with specified _id field', done => {
+        request(app)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)
+            .expect(200)
+            .expect(res => {
+                expect(res.body).toEqual(
+                    items
+                        .filter(item => item.ID === items[0].ID)
+                        .map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+                );
+            })
+            .end(done);
+    });
+
+    it('should return 400 if _id field is invalid', done => {
+        request(app)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}/123rr`)
+            .expect(400)
+            .end(done);
+    });
+
+    it('should return 404 if document with such _id does not exists', done => {
+        request(app)
+            .get(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}/${new ObjectID()}`)
+            .expect(404)
+            .end(done);
+    });
+});
