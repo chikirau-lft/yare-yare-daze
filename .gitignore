@@ -1,0 +1,8 @@
+# dependencies
+/node_modules
+
+# iis logs folder
+/iisnode
+
+# https sertificate
+/sertificates

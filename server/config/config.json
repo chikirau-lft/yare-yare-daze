@@ -1,0 +1,24 @@
+{
+    "test": {
+        "MONGO_URI": "mongodb://localhost:27017",
+        "MONGO_DATABASE": "mongoAPI_tests",
+        "DEFAULT_PAGESIZE": 7,
+        "MAX_PAGESIZE": 8,
+        "DEFAULT_PAGENUM": 1,
+        "DEFAULT_FILTER": "",
+        "DEFAULT_SORT" : "_id",
+        "DEFAULT_KEYS": "",
+        "DEFAULT_HINT": ""
+    },
+    "development": {
+        "MONGO_URI": "mongodb://localhost:27017",
+        "MONGO_DATABASE": "Nectar_Export_100000",
+        "DEFAULT_PAGESIZE": 100,
+        "MAX_PAGESIZE": 1000,
+        "DEFAULT_PAGENUM": 1,
+        "DEFAULT_FILTER": "",
+        "DEFAULT_SORT" : "-_id",
+        "DEFAULT_KEYS": "",
+        "DEFAULT_HINT": ""
+    }
+}
