@@ -22,6 +22,7 @@ app.use(logger);
 app.use(require('./server/controllers/get.js'));
 app.use(require('./server/controllers/patch.js'));
 app.use(require('./server/controllers/delete.js'));
+app.use(require('./server/controllers/put.js'));
 
 const httpServer = http.createServer(app);
 // const httpsServer = https.createServer({
