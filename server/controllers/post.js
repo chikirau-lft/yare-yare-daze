@@ -21,7 +21,7 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
 
         let response = {
             _embedded: [],
-            inserted: 0,
+            inserted: insertDocs.length,
             deleted: 0,
             modified: 0,
             matched: 0
@@ -59,7 +59,6 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
                 return res.status(200).send(response);
             });
         } else {
-            response.inserted = insertDocs.length;
             return res.status(200).send(response);
         }
     } catch(e) {
