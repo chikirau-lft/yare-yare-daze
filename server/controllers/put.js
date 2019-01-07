@@ -7,7 +7,6 @@ const { ObjectID } = require('mongodb');
 const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
-const { ClientErrors } = require('../utils/errors.js');
 
 router.put(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
     try {
