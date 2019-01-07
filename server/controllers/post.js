@@ -27,6 +27,12 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
             matched: 0
         };
 
+        for(const doc of insertedDocs) {
+            response._embedded.push({
+                href: `/mongo/${process.env.MONGO_DATABASE}/${req.params.collection}/${doc._id}`
+            });
+        }
+
         updateDocs
             .map(doc => doc._id)
             .forEach((id, index) => {
@@ -38,8 +44,7 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
     
                 counter++;
                 if (counter % 500 == 0) {
-                    bulk.execute((err, r) => {
-                        
+                    bulk.execute((err, r) => {             
                         bulk = collection.collection.initializeOrderedBulkOp();
                         counter = 0;
                     });
@@ -51,7 +56,6 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
                 response.matched = result.nMatched;
                 response.modified = result.nModified;
                 response.deleted = result.nRemoved;
-
                 return res.status(200).send(response);
             });
         } else {

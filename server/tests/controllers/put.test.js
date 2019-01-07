@@ -19,7 +19,7 @@ describe(`PUT /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
         await collection.insertMany(items);
     });
     
-    it('should update document if _id is send in reques body', done => {
+    it('should update document if _id is send in request body', done => {
         const json = {
             _id: items[0]._id.toHexString(),
             ID: 'updated value',
