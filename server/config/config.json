@@ -2,6 +2,7 @@
     "test": {
         "MONGO_URI": "mongodb://localhost:27017",
         "MONGO_DATABASE": "mongoAPI_tests",
+        "APP_PREFIX": "iisREST",
         "DEFAULT_PAGESIZE": 7,
         "MAX_PAGESIZE": 8,
         "DEFAULT_PAGENUM": 1,
@@ -12,7 +13,8 @@
     },
     "development": {
         "MONGO_URI": "mongodb://localhost:27017",
-        "MONGO_DATABASE": "mongoAPI_tests",
+        "MONGO_DATABASE": "Nectar_Export_100000",
+        "APP_PREFIX": "iisREST",
         "DEFAULT_PAGESIZE": 100,
         "MAX_PAGESIZE": 1000,
         "DEFAULT_PAGENUM": 1,

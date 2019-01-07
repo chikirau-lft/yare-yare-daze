@@ -11,7 +11,7 @@ const { CommonSchema } = require('../../models/common.js');
 const { items } = require('../../seed/seed.tests.js');
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`PUT /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
+describe(`PUT /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
     
     beforeEach(async() => {
         let collection = mongoose.model(testCollection, CommonSchema);
@@ -27,7 +27,7 @@ describe(`PUT /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
         };
 
         request(app)
-            .put(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
             .send(json)
             .expect(200)
             .expect(res => {
@@ -56,7 +56,7 @@ describe(`PUT /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
         };
 
         request(app)
-            .put(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
             .send(json)
             .expect(200)
             .expect(res => {
@@ -79,7 +79,7 @@ describe(`PUT /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
 
     it('should return 400 if ObjectId is not valid', done => {
         request(app)
-            .put(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
             .send({
                 _id: '132gd',
                 data: [1, 2, 3]

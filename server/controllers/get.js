@@ -12,7 +12,7 @@ const { ClientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { arrayToObject } = require('../utils/utils.js');
 
-router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_FILTER;
@@ -52,7 +52,7 @@ router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) =
     }
 });
 
-router.get(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
     try {
         const _id = req.params._id;
 

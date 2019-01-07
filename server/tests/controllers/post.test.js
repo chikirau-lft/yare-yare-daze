@@ -12,7 +12,7 @@ const { CommonSchema } = require('../../models/common.js');
 const { items } = require('../../seed/seed.tests.js');
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`POST /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
+describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
     
     beforeEach(async() => {
         let collection = mongoose.model(testCollection, CommonSchema);
@@ -30,7 +30,7 @@ describe(`POST /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
         }];
 
         request(app)
-            .post(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
             .send(data)
             .expect(200)
             .expect(res => {
@@ -69,12 +69,12 @@ describe(`POST /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
         }];
 
         request(app)
-            .post(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
             .send(data)
             .expect(200)
             .expect(res => {
                 const _embedded = data.map(d => { 
-                    return { href: `/mongo/${process.env.MONGO_DATABASE}/${testCollection}/${d._id.toHexString()}`};
+                    return { href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${d._id.toHexString()}`};
                 });
                 expect(res.body).toEqual({
                     _embedded: _embedded,
@@ -109,7 +109,7 @@ describe(`POST /mongo/${process.env.MONGO_DATABASE}/:collection`, () => {
         }];
 
         request(app)
-            .post(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
             .send(data)
             .expect(200)
             .expect(res => {

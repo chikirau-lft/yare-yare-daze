@@ -9,7 +9,7 @@ const router = express.Router();
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 
-router.patch(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
+router.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
     try {
         const _id = req.params._id;
         const update = req.body;

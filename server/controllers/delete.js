@@ -9,7 +9,7 @@ const router = express.Router();
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 
-router.delete(`/mongo/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
+router.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
     try {
         const _id = req.params._id;
 

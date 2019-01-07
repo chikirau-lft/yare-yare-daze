@@ -8,7 +8,7 @@ const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
 
-router.put(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
+router.put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
     try {
         const _id = req.body._id ? req.body._id : new ObjectID(); 
 

@@ -8,7 +8,7 @@ const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
 
-router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
+router.post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
     try {
         const updateDocs = req.body.filter(doc => doc._id !== undefined);
         const insertDocs = req.body.filter(doc => doc._id === undefined);
@@ -29,7 +29,7 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
 
         for(const doc of insertedDocs) {
             response._embedded.push({
-                href: `/mongo/${process.env.MONGO_DATABASE}/${req.params.collection}/${doc._id}`
+                href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${req.params.collection}/${doc._id}`
             });
         }
 
@@ -39,12 +39,12 @@ router.post(`/mongo/${process.env.MONGO_DATABASE}/:collection`, async(req, res) 
                 let { _id, ...data } = updateDocs[index];
                 bulk.find({ _id: new ObjectID(id) }).update({ $set: data }, { new: true, useFindAndModify: false });
                 response._embedded.push({
-                    href: `/mongo/${process.env.MONGO_DATABASE}/${req.params.collection}/${id}`
+                    href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${req.params.collection}/${id}`
                 });
     
                 counter++;
                 if (counter % 500 == 0) {
-                    bulk.execute((err, r) => {             
+                    bulk.execute((err, r) => {           
                         bulk = collection.collection.initializeOrderedBulkOp();
                         counter = 0;
                     });

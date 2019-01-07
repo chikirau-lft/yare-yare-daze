@@ -11,7 +11,7 @@ const { CommonSchema } = require('../../models/common.js');
 const { items } = require('../../seed/seed.tests.js');
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`DELETE ${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
+describe(`DELETE ${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
 
     beforeEach(async() => {
         let collection = mongoose.model(testCollection, CommonSchema);
@@ -21,7 +21,7 @@ describe(`DELETE ${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
     
     it('should remove document from collection', done => {
         request(app)
-            .delete(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)
+            .delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)
             .expect(200)
             .expect(res => {
                 expect(res.body).toEqual(
@@ -44,14 +44,14 @@ describe(`DELETE ${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
 
     it('should return 400 if _id field is invalid', done => {
         request(app)
-            .delete(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}/123`)
+            .delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/123`)
             .expect(400)
             .end(done);
     });
 
     it('should return 404 if document with such _id does not exists', done => {
         request(app)
-            .delete(`/mongo/${process.env.MONGO_DATABASE}/${testCollection}/${new ObjectID()}`)
+            .delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${new ObjectID()}`)
             .expect(404)
             .end(done);
     });
