@@ -32,8 +32,7 @@ router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection
             ? req.query.hint.join(' ') : req.query.hint !== undefined ? JSON.parse(_.replace(req.query.hint, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_HINT;
 
         const collection = mongoose.model(req.params.collection, CommonSchema);
-        const documents = await collection
-            .find(filter === '' ? {} : filter)
+        const documents = await collection.find(filter === '' ? {} : filter)
             .select(keys)
             .hint(hint)
             .skip(isNaN(page) ? +process.env.DEFAULT_PAGENUM : page * pagesize - pagesize)

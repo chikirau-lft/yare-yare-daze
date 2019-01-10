@@ -21,8 +21,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(logger);
 
-app.use(require('./server/controllers/get.js'));
 app.use(require('./server/controllers/patch.js'));
+app.use(require('./server/controllers/get.js'));
 app.use(require('./server/controllers/put.js'));
 app.use(require('./server/controllers/post.js'));
 app.use(require('./server/controllers/delete.js'));

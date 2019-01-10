@@ -77,3 +77,43 @@ describe(`PATCH /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collec
             .end(done);
     });
 });
+
+describe(`PATCH /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/*?filter=...`, () => {
+    
+    beforeEach(async() => {
+        let collection = mongoose.model(testCollection, CommonSchema);
+        await collection.deleteMany({});
+        await collection.insertMany(items);
+    });
+
+    it('should update multiple documents specified by filter query', done => {
+        request(app)
+            .patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/*?filter={"TS": ${items[0].TS}}`)
+            .send({
+                array: 'new array string'
+            })
+            .expect(200)
+            .expect(res => {
+                expect(res.body).toEqual({
+                    inserted: 0,
+                    deleted: 0,
+                    modified: items.filter(element => element.TS === items[0].TS).length,
+                    matched: 0
+                });
+            })
+            .end(async(err, res) => {
+                if (err)
+                    return done(err);
+               
+                const collection = mongoose.model(testCollection, CommonSchema);
+                const documents = await collection.find({ TS: items[0] });
+
+                documents
+                    .map(d => d.toObject())
+                    .forEach(d => expect(d).toMatchObject({
+                        array: 'new array string'
+                    }));
+                done();
+            });
+    });
+});
