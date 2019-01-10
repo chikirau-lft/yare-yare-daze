@@ -113,7 +113,23 @@ describe(`PATCH /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collec
                     .forEach(d => expect(d).toMatchObject({
                         array: 'new array string'
                     }));
+
                 done();
             });
+    });
+
+    it('should return 400 status if invalid filter obj is spesified', done => {
+        request(app)
+            .patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/*?filter={"TS": ${items[0].TS}`)
+            .send({
+                array: 'new array string'
+            })
+            .expect(400)
+            .expect(res => {
+                expect(res.body).toMatchObject({
+                    statusCode: 400
+                })
+            })
+            .end(done);
     });
 });
