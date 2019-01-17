@@ -11,8 +11,9 @@ const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { arrayToObject } = require('../utils/utils.js');
+const { getDatabaseConnection } = require('../db/mongoose.js');
 
-router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_FILTER;
@@ -31,7 +32,8 @@ router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection
         const hint = typeof req.query.hint === 'object' 
             ? req.query.hint.join(' ') : req.query.hint !== undefined ? JSON.parse(_.replace(req.query.hint, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_HINT;
 
-        const collection = mongoose.model(req.params.collection, CommonSchema);
+        const db = getDatabaseConnection(req.params.database);
+        const collection = db.model(req.params.collection, CommonSchema);
         const documents = await collection.find(filter === '' ? {} : filter)
             .select(keys)
             .hint(hint)
@@ -51,15 +53,16 @@ router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection
     }
 });
 
-router.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res) => {
     try {
         const _id = req.params._id;
 
         if (!ObjectId.isValid(_id))
             throw new Error(ClientErrors.INVALID_ID);
 
-        const Collection = mongoose.model(req.params.collection, CommonSchema);
-        const document = await Collection.findOne({ _id });
+        const db = getDatabaseConnection(req.params.database);
+        const collection = db.model(req.params.collection, CommonSchema);
+        const document = await collection.findOne({ _id });
 
         if (!document)
             return res.status(404).send();

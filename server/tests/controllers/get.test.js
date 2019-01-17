@@ -7,14 +7,16 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
-
 const { items } = require('../../seed/seed.tests.js');
+const { getDatabaseConnection } = require('../../db/mongoose.js');
+
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
 
     beforeEach(async() => {
-        let collection = mongoose.model(testCollection, CommonSchema);
+        const db = getDatabaseConnection(process.env.MONGO_DATABASE);
+        const collection = db.model(testCollection, CommonSchema);
         await collection.deleteMany({});
         await collection.insertMany(items);
     });
@@ -238,7 +240,15 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     });
 });
 
-describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, () => {
+describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
+
+    beforeEach(async() => {
+        const db = getDatabaseConnection(process.env.MONGO_DATABASE);
+        const collection = db.model(testCollection, CommonSchema);
+        await collection.deleteMany({});
+        await collection.insertMany(items);
+    });
+    
     it('should return document with specified _id field', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)

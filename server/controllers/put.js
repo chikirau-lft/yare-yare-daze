@@ -7,12 +7,14 @@ const { ObjectID } = require('mongodb');
 const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
+const { getDatabaseConnection } = require('../db/mongoose.js');
 
-router.put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, async(req, res) => {
+router.put(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
     try {
         const _id = req.body._id ? req.body._id : new ObjectID(); 
 
-        const collection = mongoose.model(req.params.collection, CommonSchema);
+        const db = getDatabaseConnection(req.params.database);
+        const collection = db.model(req.params.collection, CommonSchema);
         const document = await collection.findOneAndUpdate({ _id }, 
             {...req.body} , { upsert: true, useFindAndModify: false, new: true });
 

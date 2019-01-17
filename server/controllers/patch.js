@@ -9,8 +9,9 @@ const router = express.Router();
 
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
+const { getDatabaseConnection } = require('../db/mongoose.js');
 
-router.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/:_id`, async(req, res, next) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
     if (req.params._id === '*')
         return next('route');
 
@@ -21,7 +22,8 @@ router.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
         if (!ObjectId.isValid(_id))
             throw new Error(ClientErrors.INVALID_ID);
 
-        const collection = mongoose.model(req.params.collection, CommonSchema);
+        const db = getDatabaseConnection(req.params.database);
+        const collection = db.model(req.params.collection, CommonSchema);
         const document = await collection.findOneAndUpdate({ _id }, update , { new: true, useFindAndModify: false });
 
         if (!document)
@@ -37,12 +39,13 @@ router.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 });
 
 // Bulk PATCH
-router.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection/*`, async(req, res) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : '';
 
-        const collection = mongoose.model(req.params.collection, CommonSchema);
+        const db = getDatabaseConnection(req.params.database);
+        const collection = db.model(req.params.collection, CommonSchema);
         const documents = await collection.updateMany(filter, req.body, { useFindAndModify: false });
 
         return res.status(200).send({
