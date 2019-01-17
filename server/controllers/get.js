@@ -13,6 +13,32 @@ const { generateProperties } = require('../utils/property.js');
 const { arrayToObject } = require('../utils/utils.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res) => {
+    if (!req.params._id)
+        return next('route');
+
+    try {
+        const _id = req.params._id;
+
+        if (!ObjectId.isValid(_id))
+            throw new Error(ClientErrors.INVALID_ID);
+
+        const db = getDatabaseConnection(req.params.database);
+        const collection = db.model(req.params.collection, CommonSchema);
+        const document = await collection.findOne({ _id });
+
+        if (!document)
+            return res.status(404).send();
+
+        return res.status(200).send(document);
+    } catch(e) {
+        return res.status(400).send({
+            statusCode: 400,
+            ERROR: e.message
+        });
+    }
+});
+
 router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
@@ -45,29 +71,6 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) =
             : generateProperties(documents, req.params.collection, await collection.countDocuments({}), pagesize, count);
 
         return res.send(response);
-    } catch(e) {
-        return res.status(400).send({
-            statusCode: 400,
-            ERROR: e.message
-        });
-    }
-});
-
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res) => {
-    try {
-        const _id = req.params._id;
-
-        if (!ObjectId.isValid(_id))
-            throw new Error(ClientErrors.INVALID_ID);
-
-        const db = getDatabaseConnection(req.params.database);
-        const collection = db.model(req.params.collection, CommonSchema);
-        const document = await collection.findOne({ _id });
-
-        if (!document)
-            return res.status(404).send();
-
-        return res.status(200).send(document);
     } catch(e) {
         return res.status(400).send({
             statusCode: 400,
