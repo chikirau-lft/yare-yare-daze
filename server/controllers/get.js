@@ -13,7 +13,7 @@ const { generateProperties } = require('../utils/property.js');
 const { arrayToObject } = require('../utils/utils.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
     if (!req.params._id)
         return next('route');
 
