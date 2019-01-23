@@ -12,15 +12,12 @@ const moment = require('moment');
 const cors = require('cors');
 
 const appendFile = util.promisify(fs.appendFile);
-
 const { logger } = require('./server/middleware/logs.js');
 
 const app = express();
-
 app.use(bodyParser.json());
 app.use(cors());
 app.use(logger);
-
 app.use(require('./server/controllers/patch.js'));
 app.use(require('./server/controllers/get.js'));
 app.use(require('./server/controllers/put.js'));
@@ -28,7 +25,6 @@ app.use(require('./server/controllers/post.js'));
 app.use(require('./server/controllers/delete.js'));
 
 const httpServer = http.createServer(app);
-
 httpServer.listen(process.env.PORT || 3000, async () => {
     const time = moment().format('MMMM Do YYYY, h:mm:ss a');
     const message = `Server is up. HTTP connections is listened on port ${process.env.PORT || 3000}, date - ${time}\n`;
