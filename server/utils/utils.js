@@ -9,6 +9,8 @@ const arrayToObject = array => {
 };
 
 const parseFilter = filter => {
+    filter = _.replace(filter, new RegExp(",","g"), "");
+    
     const start = filter.indexOf('['), 
           end = filter.indexOf(']');
 
@@ -17,11 +19,10 @@ const parseFilter = filter => {
         const res = arr.split('}').map(s => s + '}');
         
         if (res[0] === '[}') 
-            return JSON.parse(_.replace(filter, new RegExp("\'","g"), "\"")); 
+            return JSON.parse(_.replace(filter, new RegExp("\'","g"), "\""));
         
         const jsonString = filter.substring(0, start) + '[' + res.join(',') + ']}';
         const json = _.replace(jsonString, new RegExp("\'","g"), "\"");
-
         return JSON.parse(json);
     }
     return JSON.parse(_.replace(filter, new RegExp("\'","g"), "\""));

@@ -15,16 +15,11 @@ const { arrayToObject, parseFilter } = require('../utils/utils.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
 router.get(`/${process.env.APP_PREFIX}/info`, (req, res) => {
-    const filter =req.query.filter //!== undefined 
-        // ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_FILTER;
-
-
-    parseFilter(filter);
+    parseFilter(req.query.filter);
 
     return res.status(200).send({
         statusCode: 200,
-        arch: os.arch(),
-        filter: filter
+        arch: os.arch()
     });
 });
 
@@ -87,7 +82,6 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) =
 
         return res.send(response);
     } catch(e) {
-        console.log(e.message);
         return res.status(400).send({
             statusCode: 400,
             ERROR: e.message
