@@ -14,12 +14,10 @@ const { generateProperties } = require('../utils/property.js');
 const { arrayToObject, parseFilter } = require('../utils/utils.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
-router.get(`/${process.env.APP_PREFIX}/info`, (req, res) => {
-    parseFilter(req.query.filter);
-
+router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
     return res.status(200).send({
         statusCode: 200,
-        arch: os.arch()
+        applicationName: 'iisREST'
     });
 });
 
