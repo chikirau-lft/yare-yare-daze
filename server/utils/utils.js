@@ -9,8 +9,10 @@ const arrayToObject = array => {
 };
 
 const parseFilter = filter => {
+    if (filter === undefined) 
+        return process.env.DEFAULT_FILTER;
     filter = _.replace(filter, new RegExp(",","g"), "");
-    
+
     const start = filter.indexOf('['), 
           end = filter.indexOf(']');
 
@@ -28,7 +30,40 @@ const parseFilter = filter => {
     return JSON.parse(_.replace(filter, new RegExp("\'","g"), "\""));
 };
 
+const parseSort = sort => {
+    return sort !== undefined 
+        ? JSON.parse(_.replace(sort, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_SORT;
+};
+
+const parsePagesize = pagesize => {
+    return pagesize === undefined || +pagesize > +process.env.MAX_PAGESIZE 
+        ? +process.env.DEFAULT_PAGESIZE : +pagesize;
+};
+
+const parsePage = page => {
+    return page !== undefined ? +page : +process.env.DEFAULT_PAGENUM; 
+};
+
+const parseCount = count => {
+    return count === 'true';
+};
+
+const parseKeys = keys => {
+    return typeof keys === 'object' 
+        ? arrayToObject(keys) : keys !== undefined ? JSON.parse(_.replace(keys, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_KEYS;
+};
+
+const parseHint = hint => {
+    return typeof hint === 'object' 
+        ? hint.join(' ') : hint !== undefined ? JSON.parse(_.replace(hint, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_HINT;
+};
+
 module.exports = {
-    arrayToObject,
-    parseFilter
+    parseFilter,
+    parseSort,
+    parsePagesize,
+    parsePage,
+    parseCount,
+    parseKeys,
+    parseHint
 };

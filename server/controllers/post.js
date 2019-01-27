@@ -4,11 +4,10 @@ const mongoose = require('mongoose');
 const express = require('express');
 const { ObjectID } = require('mongodb');
 
-const router = express.Router();
-
 const { CommonSchema } = require('../models/common.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
+const router = express.Router();
 router.post(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
     try {
         const updateDocs = req.body.filter(doc => doc._id !== undefined);

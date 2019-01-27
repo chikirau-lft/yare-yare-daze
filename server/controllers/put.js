@@ -4,11 +4,10 @@ const mongoose = require('mongoose');
 const express = require('express');
 const { ObjectID } = require('mongodb');
 
-const router = express.Router();
-
 const { CommonSchema } = require('../models/common.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
+const router = express.Router();
 router.put(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
     try {
         const _id = req.body._id ? req.body._id : new ObjectID(); 

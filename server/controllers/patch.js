@@ -5,12 +5,11 @@ const express = require('express');
 const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
-const router = express.Router();
-
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
+const router = express.Router();
 router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
     if (req.params._id === '*')
         return next('route');
