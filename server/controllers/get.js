@@ -18,7 +18,7 @@ const {
     parseCount,
     parseKeys,
     parseHint
-} = require('../utils/utils.js');
+} = require('../utils/parsers.js');
 
 const router = express.Router();
 router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
