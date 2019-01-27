@@ -21,28 +21,6 @@ router.get(`/${process.env.APP_PREFIX}/info`, (req, res) => {
 
     parseFilter(filter);
 
-    // const start = filter.indexOf('[');
-    // const end = filter.indexOf(']');
-
-    // if (start !== -1 && end !== -1) {
-    //     let arr = filter.substring(start + 1, end - 1);
-        
-    //     let key = filter.substring(0, start);
-        
-        
-
-    //     let res = [];
-    //     for (let str of arr.split('}')) {
-    //         res.push(str + '}');
-    //     }
-
-    //     let resStr = filter.substring(0, start) + '[' + res.join(',') + ']}';
-    //     let finalJS = _.replace(resStr, new RegExp("\'","g"), "\"");
-
-    //     console.log(JSON.parse(finalJS));
-    // }
-
-
     return res.status(200).send({
         statusCode: 200,
         arch: os.arch(),
@@ -79,7 +57,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, r
 router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
-            ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_FILTER;
+            ? parseFilter(req.query.filter) : process.env.DEFAULT_FILTER;
         const sort = req.query.sort !== undefined 
             ? JSON.parse(_.replace(req.query.sort, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_SORT;
 
@@ -109,6 +87,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) =
 
         return res.send(response);
     } catch(e) {
+        console.log(e.message);
         return res.status(400).send({
             statusCode: 400,
             ERROR: e.message
