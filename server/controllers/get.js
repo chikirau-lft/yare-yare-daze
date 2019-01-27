@@ -1,5 +1,6 @@
 'use strict';
 
+const os = require('os');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -12,6 +13,13 @@ const { ClientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { arrayToObject } = require('../utils/utils.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
+
+router.get(`/${process.env.APP_PREFIX}/info`, (req, res) => {
+    return res.status(200).send({
+        statusCode: 200,
+        arch: os.arch()
+    });
+});
 
 router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
     if (!req.params._id)
