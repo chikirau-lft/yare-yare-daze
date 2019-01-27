@@ -11,13 +11,42 @@ const router = express.Router();
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
-const { arrayToObject } = require('../utils/utils.js');
+const { arrayToObject, parseFilter } = require('../utils/utils.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
 router.get(`/${process.env.APP_PREFIX}/info`, (req, res) => {
+    const filter =req.query.filter //!== undefined 
+        // ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : process.env.DEFAULT_FILTER;
+
+
+    parseFilter(filter);
+
+    // const start = filter.indexOf('[');
+    // const end = filter.indexOf(']');
+
+    // if (start !== -1 && end !== -1) {
+    //     let arr = filter.substring(start + 1, end - 1);
+        
+    //     let key = filter.substring(0, start);
+        
+        
+
+    //     let res = [];
+    //     for (let str of arr.split('}')) {
+    //         res.push(str + '}');
+    //     }
+
+    //     let resStr = filter.substring(0, start) + '[' + res.join(',') + ']}';
+    //     let finalJS = _.replace(resStr, new RegExp("\'","g"), "\"");
+
+    //     console.log(JSON.parse(finalJS));
+    // }
+
+
     return res.status(200).send({
         statusCode: 200,
-        arch: os.arch()
+        arch: os.arch(),
+        filter: filter
     });
 });
 
