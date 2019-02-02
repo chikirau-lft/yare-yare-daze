@@ -37,7 +37,7 @@ Then ensure you can open up http://localhost successfully.
     
     in this repository. After cloning just run `npm install`) and web.config files inside of it. Note! Your site name is IIS should be same as `APP_PREFIX` in 
     
-    config.json. Then click Browse in IIS Manager. 
+    config.json. Then click Browse in IIS Manager.
 
 2) Or you can run app just as http server without IIS:
 
