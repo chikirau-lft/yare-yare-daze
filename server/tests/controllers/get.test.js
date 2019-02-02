@@ -56,6 +56,40 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
             .end(done);
     });
 
+    it('should return filtered documnts if filter params is coma separated array', done => {
+        request(app)
+            .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or':[{'ID': '${items[0].ID}'}, {'ID': '${items[2].ID}'}]}`)
+            .expect(200)
+            .expect(res => {
+                expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID || item.ID === items[2].ID).length);
+                expect(res.body._size).toBe(undefined);
+                expect(res.body._total_pages).toBe(undefined);
+                expect(res.body._embedded).toEqual(
+                    items
+                        .filter(item => item.ID === items[0].ID || item.ID === items[2].ID)
+                        .map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+                );
+            })
+            .end(done);
+    });
+
+    it('should return filtered documnts if filter params is NOT coma separated array', done => {
+        request(app)
+            .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or':[{'ID': '${items[0].ID}'} {'ID': '${items[2].ID}'}]}`)
+            .expect(200)
+            .expect(res => {
+                expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID || item.ID === items[2].ID).length);
+                expect(res.body._size).toBe(undefined);
+                expect(res.body._total_pages).toBe(undefined);
+                expect(res.body._embedded).toEqual(
+                    items
+                        .filter(item => item.ID === items[0].ID || item.ID === items[2].ID)
+                        .map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+                );
+            })
+            .end(done);
+    });
+
     it('should return 400 if filter param is invalid JSON string', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={ ID': '${items[0].ID}'`)
@@ -248,7 +282,7 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
         await collection.deleteMany({});
         await collection.insertMany(items);
     });
-    
+
     it('should return document with specified _id field', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)

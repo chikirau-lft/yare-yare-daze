@@ -18,11 +18,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(logger);
-app.use(require('./server/controllers/patch.js'));
+// app.use(require('./server/controllers/patch.js'));
 app.use(require('./server/controllers/get.js'));
-app.use(require('./server/controllers/put.js'));
-app.use(require('./server/controllers/post.js'));
-app.use(require('./server/controllers/delete.js'));
+// app.use(require('./server/controllers/put.js'));
+// app.use(require('./server/controllers/post.js'));
+// app.use(require('./server/controllers/delete.js'));
 
 const httpServer = http.createServer(app);
 httpServer.listen(process.env.PORT || 3000, async () => {
