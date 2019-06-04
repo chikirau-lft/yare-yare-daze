@@ -8,19 +8,16 @@ const { ObjectID } = require('mongodb');
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
 const { items, users, populateUsers } = require('../../seed/seed.tests.js');
-const { getDatabaseConnection } = require('../../db/mongoose.js');
+const { getDatabaseConnection, getCollection } = require('../../db/mongoose.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
 
-    beforeEach(async() => {
-        const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-        const collection = db.model(testCollection, CommonSchema);
+    beforeEach(async () => {
+        const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
         await collection.deleteMany({});
         await collection.insertMany(items);
-
-        // populateUsers();
     });
     beforeEach(populateUsers);
 
@@ -295,8 +292,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 
     beforeEach(async() => {
-        const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-        const collection = db.model(testCollection, CommonSchema);
+        const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
         await collection.deleteMany({});
         await collection.insertMany(items);
     });

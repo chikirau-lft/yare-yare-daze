@@ -17,6 +17,12 @@ const getDatabaseConnection = dbName => {
     }       
 };
 
+const getCollection = (dbName, colName, schema) => {
+    const db = getDatabaseConnection(dbName);
+    return db.model(colName, schema);
+};
+
 module.exports = {
-    getDatabaseConnection
+    getDatabaseConnection,
+    getCollection
 };
