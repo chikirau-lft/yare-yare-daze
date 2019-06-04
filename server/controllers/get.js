@@ -24,11 +24,11 @@ const router = express.Router();
 router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
     return res.status(200).send({
         statusCode: 200,
-        applicationName: 'iisREST'
+        applicationName: process.env.APP_PREFIX
     });
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authenticate, async(req, res, next) => {
     if (!req.params._id)
         return next('route');
 

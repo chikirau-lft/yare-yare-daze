@@ -1,6 +1,9 @@
 'use strict';
 
 const { ObjectID } = require('mongodb');
+const jwt = require('jsonwebtoken');
+
+const { UserSchema } = require('./../models/users.js');
 
 const items = [{
     _id: new ObjectID(),
@@ -94,6 +97,52 @@ const items = [{
     }
 }];
 
+const userOneId = new ObjectID();
+const userTwoId = new ObjectID();
+
+const users =[{
+    _id: userOneId,
+    email: 'email111@example.com',
+    password: 'userOnePass',
+    tokens: [{
+        access: 'auth',
+        token: jwt.sign({ _id: userOneId, access: 'auth' }, process.env.JWT_SECRET).toString()
+    }]
+}, {
+    _id: userTwoId,
+    email: 'email222@example.com',
+    password: 'userTwoPass',
+    tokens: [{
+        access: 'auth',
+        token: jwt.sign({ _id: userTwoId, access: 'auth' }, process.env.JWT_SECRET).toString()
+    }]
+}];
+
+const populateItems = async (collection, schema, data) => {
+    const db = getDatabaseConnection(process.env.MONGO_DATABASE);
+    const col = db.model(collection, schema);
+    await col.deleteMany({});
+    await col.insertMany(data);
+};
+
+const populateUsers = async () => {
+    const db = getDatabaseConnection(process.env.MONGO_DATABASE);
+    const Users = db.model('Users', UserSchema);
+    await Users.deleteMany({});
+    for(const user of users) {
+        new Users(users[0]).save();
+    }
+    // User.remove({}).then(() => {
+    //     var userOne = new User(users[0]).save();
+    //     var userTwo = new User(users[1]).save();
+
+    //     return Promise.all([userOne, userTwo]);
+    // }).then(() => done());
+};
+
 module.exports = {
-    items
+    items,
+    users,
+    populateItems,
+    populateUsers
 };

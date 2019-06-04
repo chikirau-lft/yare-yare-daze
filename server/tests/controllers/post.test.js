@@ -8,7 +8,7 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
-const { items } = require('../../seed/seed.tests.js');
+const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
 const { getDatabaseConnection } = require('../../db/mongoose.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
@@ -20,6 +20,8 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
         const collection = db.model(testCollection, CommonSchema);
         await collection.deleteMany({});
         await collection.insertMany(items);
+
+        populateUsers();
     });
 
     it('should insert documents if _id is not specified', done => {
@@ -145,3 +147,95 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
             });
     });
 });
+
+// describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
+//     it('should create a user', done => {
+//         const email = 'dog123321@ukr.net';
+//         const password = 'password11111';
+
+//         request(app)
+//             .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users`)
+//             .send({ email, password })
+//             .expect(200)
+//             .expect(res => {
+//                 expect(res.headers['x-auth']).toBeTruthy();
+//                 expect(res.body._id).toBeTruthy();
+//                 expect(res.body.email).toBe(email);
+//             })
+//             .end(err => {
+//                 if(err)
+//                     return done(err);
+
+//                 User.findOne({ email }).then(user => {
+//                     expect(user).toBeTruthy();
+//                     expect(user.password).not.toBe(password);
+//                     done();
+//                 });
+//             });
+//     });
+
+//     it('should return validation errors if request invalid', done => {
+//         const email = 'do';
+//         const password = 'password11111';
+
+//         request(app)
+//             .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users`)
+//             .send({ email, password })
+//             .expect(400)
+//             .end(done);
+//     });
+
+//     it('should not create user if email in use', done => {
+//         const email = users[0].email
+//         const password = 'userOnePass';
+
+//         request(app)
+//             .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users`)
+//             .send({ email, password })
+//             .expect(400)
+//             .end(done);
+//     });
+// });
+
+// describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/login`, () => {
+//     it('should return logged user', done => {
+//         request(app)
+//             .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/login`)
+//             .send({ email: users[1].email, password: users[1].password })
+//             .expect(200)
+//             .expect(res => {
+//                 expect(res.headers['x-auth']).toBeTruthy();
+//             })
+//             .end((err, res) => {
+//                 if(err)
+//                     return done(err);
+
+//                 User.findById(users[1]._id).then(user => {
+//                     expect(user.tokens[1]).toMatchObject({
+//                         access: 'auth',
+//                         token: res.headers['x-auth']
+//                     });
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
+
+//     it('should return 400 if invalid credentials', done => {
+//         request(app)
+//             .post(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/login`)
+//             .send({ email: users[1].email, password: 'passValue' })
+//             .expect(400)
+//             .expect(res => {
+//                 expect(res.headers['x-auth']).toBeFalsy();
+//             })
+//             .end((err, res) => {
+//                 if(err)
+//                     return done(err);
+
+//                 User.findById(users[1]._id).then(user => {
+//                     expect(user.tokens.length).toBe(1);
+//                     done();
+//                 }).catch(e => done(e));
+//             });
+//     });
+// });
