@@ -2,23 +2,19 @@
 
 const expect = require('expect');
 const request = require('supertest');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
-const { items, users, populateUsers } = require('../../seed/seed.tests.js');
-const { getDatabaseConnection, getCollection } = require('../../db/mongoose.js');
+const { items, users, populateUsers, populateItems } = require('../../seed/seed.tests.js');
+const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
 
-    beforeEach(async () => {
-        const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
-        await collection.deleteMany({});
-        await collection.insertMany(items);
-    });
+    beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
     beforeEach(populateUsers);
 
     it('should return all process.env.DEFAULT_PAGESIZE n documents if no params is specified', done => {
@@ -291,11 +287,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 
 describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 
-    beforeEach(async() => {
-        const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
-        await collection.deleteMany({});
-        await collection.insertMany(items);
-    });
+    beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 
     it('should return document with specified _id field', done => {
         request(app)
