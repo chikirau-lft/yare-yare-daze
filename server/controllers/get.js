@@ -1,6 +1,5 @@
 'use strict';
 
-const os = require('os');
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -10,6 +9,7 @@ const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
+const { authenticate } = require('../middleware/authenticate.js');
 const {
     parseFilter,
     parseSort,
@@ -28,7 +28,7 @@ router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
     });
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id` ,async(req, res, next) => {
     if (!req.params._id)
         return next('route');
 
@@ -54,7 +54,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, r
     }
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authenticate, async(req, res) => {
     try {
         const filter   = parseFilter(req.query.filter);
         const sort     = parseSort(req.query.sort);
