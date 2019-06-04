@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 mongoose.pluralize(null);
+mongoose.set('useCreateIndex', true);
 
 const connections = {};
   

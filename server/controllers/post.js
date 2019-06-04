@@ -2,13 +2,18 @@
 
 const mongoose = require('mongoose');
 const express = require('express');
+const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
+const { UserSchema } = require('./../models/users.js');
 const { getDatabaseConnection } = require('../db/mongoose.js');
 
 const router = express.Router();
-router.post(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
+router.post(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res, next) => {
+    if (req.params.collection === 'users')
+        return next('route');
+
     try {
         const updateDocs = req.body.filter(doc => doc._id !== undefined);
         const insertDocs = req.body.filter(doc => doc._id === undefined);
@@ -67,6 +72,23 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) 
             statusCode: 400,
             ERROR: e.message
         });   
+    }
+});
+
+router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
+    const db = getDatabaseConnection(req.params.database);
+    const User = db.model('Users', UserSchema);
+
+    const body = _.pick(req.body, ['email', 'username', 'password']);
+    console.log(body)
+    const user = new User(body);
+
+    try {
+        await user.save();
+        const token = await user.generateAuthToken();
+        res.header('x-auth', token).send(user);
+    } catch(e) {
+        res.status(400).send(e);
     }
 });
 

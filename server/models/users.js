@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema({
     },
     username: {
         type: String,
+        required: true,
         require: false,
         minlength: 6
     },
@@ -117,8 +118,6 @@ UserSchema.pre('save', function(next) {
     }
 });
 
-const User = mongoose.model('User', UserSchema);
-
 module.exports = {
-    User
+    UserSchema
 }
