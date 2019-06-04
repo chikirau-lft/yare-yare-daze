@@ -28,7 +28,8 @@ router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
     });
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authenticate, async(req, res, next) => {
+const handler = process.env.JWT_AUTH === 'true' ? authenticate : (req, res, next) => next();
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, handler, async(req, res, next) => {
     if (!req.params._id)
         return next('route');
 
@@ -54,7 +55,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authenticate
     }
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authenticate, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection`, handler, async(req, res) => {
     try {
         const filter   = parseFilter(req.query.filter);
         const sort     = parseSort(req.query.sort);
