@@ -2,7 +2,6 @@
 
 const expect = require('expect');
 const request = require('supertest');
-// const mongoose = require('mongoose');
 const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
