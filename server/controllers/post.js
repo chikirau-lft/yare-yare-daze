@@ -80,8 +80,9 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
     const User = db.model('Users', UserSchema);
 
     const body = _.pick(req.body, ['email', 'username', 'password']);
-    console.log(body)
     const user = new User(body);
+
+    console.log(user)
 
     try {
         await user.save();

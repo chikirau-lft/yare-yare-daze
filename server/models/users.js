@@ -20,7 +20,6 @@ const UserSchema = new mongoose.Schema({
     },
     username: {
         type: String,
-        required: true,
         require: false,
         minlength: 6
     },
@@ -45,7 +44,7 @@ UserSchema.methods.toJSON = function() {
     const user = this;
     const userData = user.toObject();
 
-    return _.pick(userData, ['_id', 'email']);
+    return _.pick(userData, ['_id', 'email', 'username']);
 };
 
 UserSchema.methods.generateAuthToken = function() {
@@ -55,7 +54,7 @@ UserSchema.methods.generateAuthToken = function() {
 
     user.tokens.push({ access, token});
 
-    return user.save().then(() => { return token });
+    return user.save().then(() => token);
 };
 
 UserSchema.methods.removeToken = function(token) {
