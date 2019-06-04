@@ -70,6 +70,7 @@ UserSchema.methods.removeToken = function(token) {
 };
 
 UserSchema.statics.findByToken = function(token) {
+    const user = this;
     let decoded;
 
     try {
@@ -78,7 +79,7 @@ UserSchema.statics.findByToken = function(token) {
         return Promise.reject();
     }
 
-    return User.findOne({
+    return user.findOne({
         _id: decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'

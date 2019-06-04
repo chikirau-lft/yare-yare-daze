@@ -28,7 +28,7 @@ router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
     });
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id` ,async(req, res, next) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
     if (!req.params._id)
         return next('route');
 
