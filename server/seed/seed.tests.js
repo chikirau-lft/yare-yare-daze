@@ -125,14 +125,10 @@ const populateItems = async (colName, schema, data) => {
     await col.insertMany(data);
 };
 
-const populateUsers = done => {
-    const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);
-
-    const promises = [];
-    User.deleteMany({}).then(() => {
-        users.forEach(user => promises.push(new User(user).save()));
-        return Promise.all(promises);
-    }).then(() => done());
+const populateUsers = async (colName, schema, data) => {
+    const User = getCollection(process.env.MONGO_DATABASE, colName, schema);
+    await User.deleteMany({});
+    await Promise.all(data.map(user => new User(user).save()));
 };
 
 module.exports = {

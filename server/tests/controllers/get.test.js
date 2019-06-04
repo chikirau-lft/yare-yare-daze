@@ -6,6 +6,7 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
+const { UserSchema } = require('./../../models/users.js'); 
 const { items, users, populateUsers, populateItems } = require('../../seed/seed.tests.js');
 const { curry } = require('./../../utils/utils.js');
 
@@ -14,7 +15,7 @@ const testCollection = 'Qlik_MSDashboard_test';
 describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
 
     beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
-    beforeEach(populateUsers);
+    beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
     it('should return all process.env.DEFAULT_PAGESIZE n documents if no params is specified', done => {
         request(app)
