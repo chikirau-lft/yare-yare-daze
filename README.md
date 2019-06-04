@@ -1,7 +1,7 @@
 # node-restHeart
 
-Implementation of RESTHeart API(for more information visit https://restheart.org/), 
-initialy written in Java, in Node.js server running on Windows IIS or as common http node server.
+Implementation of RESTHeart API(for more information visit https://restheart.org/)
+in Node.js http server.
 
 ### Pre-requisites
 
@@ -11,41 +11,12 @@ To run the application you must have installed:
 
 2) [mongoDB](https://www.mongodb.com/) >= 3.6
 
-3) IIS 10.0 installed on your machine.
-
-4) [IIS URL Rewrite extension](https://www.iis.net/downloads/microsoft/url-rewrite)
-
-5) [latest iisnode v0.22.1 x64](https://github.com/tjanczuk/iisnode/releases/download/v0.2.21/iisnode-full-v0.2.21-x64.msi)
-
-### Installation
-
-The install is pretty straight forward for each component. You can simply go through each pre-requisites.
-
-1) Install IIS via your preferred method. PowerShell or via Server Manager.
-
-2) Install IIS URL Rewrite extension via the Web Platform Install UI or WebPICMD.
-
-3) Install iisnode from your binary download.
-
-Then ensure you can open up http://localhost successfully.
-
 ## Development server
+Run `npm install`. Then run `npm run start` for a dev server. Navigate to `http://localhost:3000/${APP_PREFIX}/:database/:collection`.
 
-1) Adding your site to IIS:
-    
-    Open up the program and on your Sites, right click and select "Add Website...". Fill out the details and link it to your folder with the app.js(app.js can be found 
-    
-    in this repository. After cloning just run `npm install`) and web.config files inside of it. Note! Your site name is IIS should be same as `APP_PREFIX` in 
-    
-    config.json. Then click Browse in IIS Manager.
+Run `npm run start-watch` for a dev server. Navigate to `http://localhost:3000/${APP_PREFIX}/:database/:collection`.The app will automatically reload if you change 
 
-2) Or you can run app just as http server without IIS:
-
-    Just clone this repository and run `npm install`. Then run `npm run start` for a dev server. Navigate to `http://localhost:3000/${APP_PREFIX}/:database/:collection`.
-
-    Run `npm run start-watch` for a dev server. Navigate to `http://localhost:3000/${APP_PREFIX}/:database/:collection`.The app will automatically reload if you change 
-    
-    any of the source files.
+any of the source files.
 
 ## Running unit tests
 
