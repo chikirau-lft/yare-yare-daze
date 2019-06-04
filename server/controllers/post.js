@@ -76,20 +76,33 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res, 
 });
 
 router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
-    const db = getDatabaseConnection(req.params.database);
-    const User = db.model('Users', UserSchema);
-
-    const body = _.pick(req.body, ['email', 'username', 'password']);
-    const user = new User(body);
-
-    console.log(user)
-
     try {
+        const db = getDatabaseConnection(req.params.database);
+        const User = db.model('Users', UserSchema);
+    
+        const body = _.pick(req.body, ['email', 'username', 'password']);
+        const user = new User(body);
+        
         await user.save();
         const token = await user.generateAuthToken();
         res.header('x-auth', token).send(user);
     } catch(e) {
         res.status(400).send(e);
+    }
+});
+
+router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res) => {
+    try {
+        const db = getDatabaseConnection(req.params.database);
+        const User = db.model('Users', UserSchema);
+        
+        const body = _.pick(req.body, ['email', 'password']);
+        const user = await User.findByCredentials(body.email, body.password);
+        const token = await user.generateAuthToken();
+    
+        res.header('x-auth', token).send(user);
+    } catch(e) {
+        res.status(400).send();
     }
 });
 
