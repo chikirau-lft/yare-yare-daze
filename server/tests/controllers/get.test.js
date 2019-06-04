@@ -7,7 +7,7 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
-const { items } = require('../../seed/seed.tests.js');
+const { items, users, populateUsers } = require('../../seed/seed.tests.js');
 const { getDatabaseConnection } = require('../../db/mongoose.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
@@ -19,11 +19,15 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
         const collection = db.model(testCollection, CommonSchema);
         await collection.deleteMany({});
         await collection.insertMany(items);
+
+        // populateUsers();
     });
+    beforeEach(populateUsers);
 
     it('should return all process.env.DEFAULT_PAGESIZE n documents if no params is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
@@ -42,6 +46,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return filtered documents if filter param is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[0].ID}"}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID).length);
@@ -59,6 +64,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return filtered documnts if filter params is coma separated array', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or':[{'ID': '${items[0].ID}'}, {'ID': '${items[2].ID}'}]}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID || item.ID === items[2].ID).length);
@@ -76,6 +82,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return filtered documnts if filter params is NOT coma separated array', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or':[{'ID': '${items[0].ID}'} {'ID': '${items[2].ID}'}]}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID || item.ID === items[2].ID).length);
@@ -93,6 +100,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return 400 if filter param is invalid JSON string', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={ ID': '${items[0].ID}'`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(400)
             .expect(res => {
                 expect(res.body).toMatchObject({ statusCode: 400 });
@@ -103,6 +111,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return sorted documents if sort param is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[2].ID}"}&sort={"_id": -1}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[2].ID).length);
@@ -121,6 +130,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return 400 if sort param is invalid JSON string', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?sort={_id": -1}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(400)
             .expect(res => {
                 expect(res.body).toMatchObject({ statusCode: 400 });
@@ -131,6 +141,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return certain number of documents if pagesize param is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[2].ID}"}&sort={"_id": -1}&pagesize=2`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(2);
@@ -150,6 +161,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return default number of documents if pagesize params if over max', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=9`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
@@ -170,6 +182,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=${pagesize}&page=${page}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(3);
@@ -187,6 +200,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return properties if count param is true', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?&count=true`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
@@ -205,6 +219,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return only certain fields if keys param is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={ "ID": "${items[0].ID}"}&keys={"TS": 1}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID).length);
@@ -225,6 +240,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return only certain fields if keys param is specified as an array', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[0].ID}"}&keys={"TS": 1}&keys={"ID": 1}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(items.filter(item => item.ID === items[0].ID).length);
@@ -245,6 +261,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should hide properties if np param is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": "${items[0].ID}"}&np`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(undefined);
@@ -264,6 +281,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
     it('should return empty JSON array if invalid collection is specified', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/col?filter={ "ID": "${items[0].ID}"}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body._returned).toBe(0);
@@ -286,6 +304,7 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
     it('should return document with specified _id field', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(200)
             .expect(res => {
                 expect(res.body).toEqual(
@@ -300,6 +319,7 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
     it('should return 400 if _id field is invalid', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/123rr`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(400)
             .end(done);
     });
@@ -307,6 +327,7 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
     it('should return 404 if document with such _id does not exists', done => {
         request(app)
             .get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${new ObjectID()}`)
+            .set('x-auth', users[0].tokens[0].token)
             .expect(404)
             .end(done);
     });

@@ -3,6 +3,7 @@
 const { ObjectID } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
+const { getDatabaseConnection } = require('./../db/mongoose.js');
 const { UserSchema } = require('./../models/users.js');
 
 const items = [{
@@ -125,19 +126,15 @@ const populateItems = async (collection, schema, data) => {
     await col.insertMany(data);
 };
 
-const populateUsers = async () => {
+const populateUsers = (done) => {
     const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-    const Users = db.model('Users', UserSchema);
-    await Users.deleteMany({});
-    for(const user of users) {
-        new Users(users[0]).save();
-    }
-    // User.remove({}).then(() => {
-    //     var userOne = new User(users[0]).save();
-    //     var userTwo = new User(users[1]).save();
+    const User = db.model('Users', UserSchema);
 
-    //     return Promise.all([userOne, userTwo]);
-    // }).then(() => done());
+    const promises = [];
+    User.remove({}).then(() => {
+        users.forEach(user => promises.push(new User(user).save()));
+        return Promise.all(promises);
+    }).then(() => done());
 };
 
 module.exports = {

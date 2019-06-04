@@ -4,7 +4,7 @@
   "description": "Rest API for mongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/tests/controllers/*.test.js",
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/tests/controllers/get.test.js",
     "start": "node app.js",
     "start-watch": "nodemon app.js"
   },
