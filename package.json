@@ -4,7 +4,8 @@
   "description": "Rest API for mongoDB",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint server/**/*.js",
+    "eslint": "eslint server/**/*.js",
+    "eslint-fix": "eslint server/**/*.js --fix",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/tests/controllers/*.test.js",
     "start": "node app.js",
     "start-watch": "nodemon app.js"

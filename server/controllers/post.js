@@ -65,7 +65,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 		updateDocs
 			.map(doc => doc._id)
 			.forEach((id, index) => {
-				let { _id, ...data } = updateDocs[index];
+				const data = _.omit(updateDocs[index], ['_id']);
 				bulk.find({ _id: new ObjectID(id) }).update({ $set: data }, { new: true, useFindAndModify: false });
 				response._embedded.push({
 					href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${req.params.collection}/${id}`

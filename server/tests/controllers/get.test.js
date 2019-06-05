@@ -2,6 +2,7 @@
 
 const expect = require('expect');
 const request = require('supertest');
+const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
@@ -222,8 +223,8 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 					items
 						.filter(item => item.ID === items[0].ID)
 						.map(item => {
-							const { ID, array, obj, ...withoutID } = item;
-							return Object.assign({}, withoutID, { _id: withoutID._id.toHexString() });
+							const data = _.omit(item, ['ID', 'array', 'obj']);
+							return Object.assign({}, data, { _id: data._id.toHexString() });
 						})
 				);
 			})  
@@ -243,8 +244,8 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 					items
 						.filter(item => item.ID === items[0].ID)
 						.map(item => {
-							const { array, obj, ...without } = item;
-							return Object.assign({}, without, { _id: without._id.toHexString() });
+							const data = _.omit(item, ['array', 'obj',]);
+							return Object.assign({}, data, { _id: data._id.toHexString() });
 						})
 				);
 			})  
