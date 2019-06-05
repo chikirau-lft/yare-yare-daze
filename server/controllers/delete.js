@@ -7,9 +7,10 @@ const { ObjectId } = require('mongodb');
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
 const { getCollection } = require('../db/mongoose.js');
+const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res, next) => {
     if (req.params._id === '*')
         return next('route');
 
@@ -35,7 +36,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req
 });
 
 // Bulk DELETE
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, async(req, res) => {
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : '';

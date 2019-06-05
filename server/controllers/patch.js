@@ -1,16 +1,16 @@
 'use strict';  
 
-const mongoose = require('mongoose');
 const express = require('express');
 const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
-const { getDatabaseConnection } = require('../db/mongoose.js');
+const { getCollection } = require('../db/mongoose.js');
+const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res, next) => {
     if (req.params._id === '*')
         return next('route');
 
@@ -21,8 +21,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req,
         if (!ObjectId.isValid(_id))
             throw new Error(ClientErrors.INVALID_ID);
 
-        const db = getDatabaseConnection(req.params.database);
-        const collection = db.model(req.params.collection, CommonSchema);
+        const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
         const document = await collection.findOneAndUpdate({ _id }, update , { new: true, useFindAndModify: false });
 
         if (!document)
@@ -38,13 +37,12 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req,
 });
 
 // Bulk PATCH
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, async(req, res) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async(req, res) => {
     try {
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : '';
 
-        const db = getDatabaseConnection(req.params.database);
-        const collection = db.model(req.params.collection, CommonSchema);
+        const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
         const documents = await collection.updateMany(filter, req.body, { useFindAndModify: false });
 
         return res.status(200).send({

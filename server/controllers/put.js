@@ -1,19 +1,18 @@
 'use strict';
 
-const mongoose = require('mongoose');
 const express = require('express');
 const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { getDatabaseConnection } = require('../db/mongoose.js');
+const { getCollection } = require('../db/mongoose.js');
+const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.put(`/${process.env.APP_PREFIX}/:database/:collection`, async(req, res) => {
+router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async(req, res) => {
     try {
         const _id = req.body._id ? req.body._id : new ObjectID(); 
 
-        const db = getDatabaseConnection(req.params.database);
-        const collection = db.model(req.params.collection, CommonSchema);
+        const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
         const document = await collection.findOneAndUpdate({ _id }, 
             {...req.body} , { upsert: true, useFindAndModify: false, new: true });
 
