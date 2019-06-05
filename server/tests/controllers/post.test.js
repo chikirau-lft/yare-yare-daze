@@ -41,8 +41,9 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				});
 			})
 			.end(async(err, res) => {
-				if (err)
-					done(err);
+				if (err) {
+					return done(err);
+				}
 
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({
@@ -85,8 +86,9 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				});
 			})
 			.end(async(err, res) => {
-				if(err)
-					done(err);
+				if(err) {
+					return done(err);
+				}
 
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({
@@ -122,8 +124,9 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				});
 			})
 			.end(async(err, res) => {
-				if(err)
-					done(err);
+				if(err) {
+					return done(err);
+				}
 
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 
@@ -161,8 +164,9 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
 				expect(res.body.email).toBe(email);
 			})
 			.end((err, res) => {
-				if(err)
+				if(err) {
 					return done(err);
+				}
 
 				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
 
@@ -210,8 +214,9 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 				expect(res.headers['x-auth']).toBeTruthy();
 			})
 			.end((err, res) => {
-				if(err)
+				if(err) {
 					return done(err);
+				}
                 
 				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
 
@@ -234,8 +239,9 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 				expect(res.headers['x-auth']).toBeFalsy();
 			})
 			.end((err, res) => {
-				if(err)
+				if(err) {
 					return done(err);
+				}
 
 				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
 

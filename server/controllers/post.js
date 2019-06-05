@@ -72,7 +72,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 				});
     
 				counter++;
-				if (counter % 500 == 0) {
+				if (counter % 500 === 0) {
 					bulk.execute((err, r) => {           
 						bulk = collection.collection.initializeOrderedBulkOp();
 						counter = 0;

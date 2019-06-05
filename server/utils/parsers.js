@@ -3,10 +3,11 @@
 const _ = require('lodash');
 const { arrayToObject } = require('./utils.js');
 
-const parseFilter = filter => {
-	if (filter === undefined) 
+const parseFilter = filterParam => {
+	if (filterParam === undefined) {
 		return process.env.DEFAULT_FILTER;
-	filter = _.replace(filter, new RegExp(',','g'), '');
+	}
+	const filter = _.replace(filterParam, new RegExp(',','g'), '');
 
 	const start = filter.indexOf('['), 
 		end = filter.indexOf(']');
@@ -15,8 +16,9 @@ const parseFilter = filter => {
 		const arr = filter.substring(start + 1, end - 1);
 		const res = arr.split('}').map(s => s + '}');
         
-		if (res[0] === '[}') 
+		if (res[0] === '[}') {
 			return JSON.parse(_.replace(filter, new RegExp('\'','g'), '"'));
+		}
         
 		const jsonString = filter.substring(0, start) + '[' + res.join(',') + ']}';
 		const json = _.replace(jsonString, new RegExp('\'','g'), '"');
@@ -31,12 +33,12 @@ const parseSort = sort => {
 };
 
 const parsePagesize = pagesize => {
-	return pagesize === undefined || +pagesize > +process.env.MAX_PAGESIZE 
-		? +process.env.DEFAULT_PAGESIZE : +pagesize;
+	return pagesize === undefined || Number(pagesize) > Number(process.env.MAX_PAGESIZE) 
+		? Number(process.env.DEFAULT_PAGESIZE) : Number(pagesize);
 };
 
 const parsePage = page => {
-	return page !== undefined ? +page : +process.env.DEFAULT_PAGENUM; 
+	return page !== undefined ? Number(page) : Number(process.env.DEFAULT_PAGENUM); 
 };
 
 const parseCount = count => {

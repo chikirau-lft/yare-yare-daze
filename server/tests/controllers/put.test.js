@@ -33,8 +33,9 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				expect(res.body).toMatchObject(json);
 			})
 			.end(async (err, res) => {
-				if(err)
+				if(err) {
 					return done(err);
+				}
 
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({});
@@ -63,8 +64,9 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				expect(res.body).toMatchObject(json);
 			})
 			.end(async(err, res) => {
-				if(err)
+				if(err) {
 					return done(err);
+				}
 
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({});

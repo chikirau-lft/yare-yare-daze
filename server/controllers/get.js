@@ -30,14 +30,16 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 	try {
 		const _id = req.params._id;
 
-		if (!ObjectId.isValid(_id))
+		if (!ObjectId.isValid(_id)) {
 			throw new Error(ClientErrors.INVALID_ID);
+		}
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOne({ _id });
 
-		if (!document)
+		if (!document) {
 			return res.status(404).send();
+		}
 
 		return res.status(200).send(document);
 	} catch(e) {
@@ -50,20 +52,20 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 
 router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async(req, res) => {
 	try {
-		const filter   = parseFilter(req.query.filter);
-		const sort     = parseSort(req.query.sort);
+		const filter = parseFilter(req.query.filter);
+		const sort = parseSort(req.query.sort);
 		const pagesize = parsePagesize(req.query.pagesize);
-		const page     = parsePage(req.query.page);
-		const count    = parseCount(req.query.count);
-		const keys     = parseKeys(req.query.keys);
-		const hint     = parseHint(req.query.hint);
+		const page = parsePage(req.query.page);
+		const count = parseCount(req.query.count);
+		const keys = parseKeys(req.query.keys);
+		const hint = parseHint(req.query.hint);
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
 		const documents = await collection.find(filter === '' ? {} : filter)
 			.select(keys)
 			.hint(hint)
-			.skip(isNaN(page) ? +process.env.DEFAULT_PAGENUM : page * pagesize - pagesize)
-			.limit(isNaN(pagesize) ? +process.env.DEFAULT_PAGESIZE : pagesize)
+			.skip(isNaN(page) ? Number(process.env.DEFAULT_PAGENUM) : page * pagesize - pagesize)
+			.limit(isNaN(pagesize) ? Number(process.env.DEFAULT_PAGESIZE) : pagesize)
 			.sort(sort);
 
 		const response = req.query.np === '' ? documents 

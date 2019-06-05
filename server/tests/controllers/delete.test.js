@@ -31,8 +31,9 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 				);
 			})
 			.end(async(err, res) => {
-				if(err)
+				if(err) {
 					return done(err);
+				}
 
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const document = await collection.findById(items[0]._id);
@@ -78,10 +79,11 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, (
 				});
 			})
 			.end(async(err, res) => {
-				if (err)
+				if (err) {
 					return done(err);
+				}
 
-				const collection =  getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({ TS: items[0] });
 
 				expect(documents).toEqual([]);

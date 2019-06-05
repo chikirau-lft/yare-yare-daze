@@ -11,10 +11,9 @@ const connections = {};
 const getDatabaseConnection = dbName => {
 	if (connections[dbName]) {
 		return connections[dbName];
-	} else {
-		connections[dbName] = mongoose.createConnection(`${process.env.MONGO_URI}/${dbName}`, { useNewUrlParser: true });
-		return connections[dbName];
-	}       
+	} 
+	connections[dbName] = mongoose.createConnection(`${process.env.MONGO_URI}/${dbName}`, { useNewUrlParser: true });
+	return connections[dbName];      
 };
 
 const getCollection = (dbName, colName, schema) => {

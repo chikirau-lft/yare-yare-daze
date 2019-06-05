@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const appendFile = util.promisify(fs.appendFile);
 
-const logger = async(req, res, next) => {
+const logger = (req, res, next) => {
 	const time = moment().format('MMMM Do YYYY, h:mm:ss a');
 	const start = moment();
     

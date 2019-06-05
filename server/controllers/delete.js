@@ -11,20 +11,23 @@ const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
 router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res, next) => {
-	if (req.params._id === '*')
+	if (req.params._id === '*') {
 		return next('route');
+	}
 
 	try {
 		const _id = req.params._id;
 
-		if (!ObjectId.isValid(_id))
+		if (!ObjectId.isValid(_id)) {
 			throw new Error(ClientErrors.INVALID_ID);
+		}
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
-		if(!document)
+		if(!document) {
 			return res.status(404).send();
+		}
  
 		return res.status(200).send(document);
 	} catch(e) {

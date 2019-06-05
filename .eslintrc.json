@@ -30,6 +30,33 @@
             "error",
             "always"
         ],
-        "no-unused-vars": [2, {"vars": "all", "args": "none"}]
+        "no-unused-vars": [
+            2, {
+                "vars": "all", 
+                "args": "none"
+        }],
+        "array-callback-return": "error",
+        "class-methods-use-this": "error",
+        "complexity": ["error", { "max": 10 }],
+        "curly": "error",
+        "dot-notation": "error",
+        "eqeqeq": ["error", "always"],
+        "guard-for-in": "error",
+        "no-else-return": "error",
+        "no-empty-function": "error",
+        "no-eq-null": "error",
+        "no-implicit-coercion": "error",
+        "no-multi-spaces": "error",
+        "no-multi-str": "error",
+        "no-new": "error",
+        "no-new-wrappers": "error",
+        "no-param-reassign": "error",
+        "no-throw-literal": "error",
+        "no-useless-concat": "error",
+        "no-useless-return": "error",
+        "prefer-promise-reject-errors":  ["error", {"allowEmptyReject": true}],
+        "radix": "error",
+        "require-await": "error",
+        "strict": ["error", "global"]
     }
 }

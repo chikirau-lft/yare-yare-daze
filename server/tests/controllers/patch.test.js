@@ -103,8 +103,9 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, 
 				});
 			})
 			.end(async(err, res) => {
-				if (err)
+				if (err) {
 					return done(err);
+				}
                
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({ TS: items[0] });

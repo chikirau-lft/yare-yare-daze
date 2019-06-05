@@ -24,13 +24,13 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
-				expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
+				expect(res.body._returned).toBe(Number(process.env.DEFAULT_PAGESIZE));
 				expect(res.body._id).toBe(testCollection);
 				expect(res.body._size).toBe(undefined);
 				expect(res.body._total_pages).toBe(undefined);
 				expect(res.body._embedded).toEqual(
 					items
-						.slice(0, +process.env.DEFAULT_PAGESIZE)
+						.slice(0, Number(process.env.DEFAULT_PAGESIZE))
 						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
 				);
 			})
@@ -158,12 +158,12 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
-				expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
+				expect(res.body._returned).toBe(Number(process.env.DEFAULT_PAGESIZE));
 				expect(res.body._size).toBe(undefined);
 				expect(res.body._total_pages).toBe(undefined);
 				expect(res.body._embedded).toEqual(
 					items
-						.slice(0, +process.env.DEFAULT_PAGESIZE)
+						.slice(0, Number(process.env.DEFAULT_PAGESIZE))
 						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
 				);
 			})
@@ -197,13 +197,13 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
-				expect(res.body._returned).toBe(+process.env.DEFAULT_PAGESIZE);
+				expect(res.body._returned).toBe(Number(process.env.DEFAULT_PAGESIZE));
 				expect(res.body._id).toBe(testCollection);
 				expect(res.body._size).toBe(items.length);
-				expect(res.body._total_pages).toBe(Math.ceil(items.length / +process.env.DEFAULT_PAGESIZE));
+				expect(res.body._total_pages).toBe(Math.ceil(items.length / Number(process.env.DEFAULT_PAGESIZE)));
 				expect(res.body._embedded).toEqual(
 					items
-						.slice(0, +process.env.DEFAULT_PAGESIZE)
+						.slice(0, Number(process.env.DEFAULT_PAGESIZE))
 						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
 				);
 			})

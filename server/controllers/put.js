@@ -16,8 +16,9 @@ router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 		const document = await collection.findOneAndUpdate({ _id }, 
 			{...req.body} , { upsert: true, useFindAndModify: false, new: true });
 
-		if (!document)
+		if (!document) {
 			return res.status(404).send();
+		}
 
 		return res.status(200).send(document);
 	} catch(e) {
