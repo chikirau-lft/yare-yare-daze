@@ -90,7 +90,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
 
 router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res) => {
     try {
-        const User = getCollection(req.params.database, req.params.collection, CommonSchema);  
+        const User = getCollection(req.params.database, 'Users', UserSchema);  
         const body = _.pick(req.body, ['email', 'password']);
         const user = await User.findByCredentials(body.email, body.password);
         const token = await user.generateAuthToken();
