@@ -6,7 +6,8 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
-const { items, users, populateItems } = require('../../seed/seed.tests.js');
+const { UserSchema } = require('./../../models/users.js');
+const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
 const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
@@ -14,6 +15,7 @@ const testCollection = 'Qlik_MSDashboard_test';
 describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collection`, () => {
 
     beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
+    beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
     it('should return all process.env.DEFAULT_PAGESIZE n documents if no params is specified', done => {
         request(app)
@@ -286,6 +288,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 
     beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
+    beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
     it('should return document with specified _id field', done => {
         request(app)
