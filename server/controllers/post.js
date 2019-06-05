@@ -10,10 +10,34 @@ const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async(req, res, next) => {
-    if (req.params.collection === 'users')
-        return next('route');
+router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
+    try {
+        const User = getCollection(req.params.database, 'Users', UserSchema);
+        const body = _.pick(req.body, ['email', 'username', 'password']);
+        const user = new User(body);
+        
+        await user.save();
+        const token = await user.generateAuthToken();
+        res.header('x-auth', token).send(user);
+    } catch(e) {
+        res.status(400).send(e);
+    }
+});
 
+router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res) => {
+    try {
+        const User = getCollection(req.params.database, 'Users', UserSchema);  
+        const body = _.pick(req.body, ['email', 'password']);
+        const user = await User.findByCredentials(body.email, body.password);
+        const token = await user.generateAuthToken();
+    
+        res.header('x-auth', token).send(user);
+    } catch(e) {
+        res.status(400).send();
+    }
+});
+
+router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async(req, res, next) => {
     try {
         const updateDocs = req.body.filter(doc => doc._id !== undefined);
         const insertDocs = req.body.filter(doc => doc._id === undefined);
@@ -71,33 +95,6 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
             statusCode: 400,
             ERROR: e.message
         });   
-    }
-});
-
-router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
-    try {
-        const User = getCollection(req.params.database, 'Users', UserSchema);
-        const body = _.pick(req.body, ['email', 'username', 'password']);
-        const user = new User(body);
-        
-        await user.save();
-        const token = await user.generateAuthToken();
-        res.header('x-auth', token).send(user);
-    } catch(e) {
-        res.status(400).send(e);
-    }
-});
-
-router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res) => {
-    try {
-        const User = getCollection(req.params.database, 'Users', UserSchema);  
-        const body = _.pick(req.body, ['email', 'password']);
-        const user = await User.findByCredentials(body.email, body.password);
-        const token = await user.generateAuthToken();
-    
-        res.header('x-auth', token).send(user);
-    } catch(e) {
-        res.status(400).send();
     }
 });
 

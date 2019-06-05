@@ -28,9 +28,6 @@ router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
 });
 
 router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res, next) => {
-    if (!req.params._id)
-        return next('route');
-
     try {
         const _id = req.params._id;
 
