@@ -3,8 +3,7 @@
 const { ObjectID } = require('mongodb');
 const jwt = require('jsonwebtoken');
 
-const { getDatabaseConnection, getCollection } = require('./../db/mongoose.js');
-const { UserSchema } = require('./../models/users.js');
+const { getCollection } = require('./../db/mongoose.js');
 
 const items = [{
     _id: new ObjectID(),

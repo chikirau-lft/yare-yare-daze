@@ -1,12 +1,11 @@
 'use strict';
 
 const { UserSchema } = require('./../models/users.js');
-const { getDatabaseConnection } = require('./../db/mongoose.js');
+const { getCollection } = require('./../db/mongoose.js');
 
 const authenticate = async (req, res, next) => {
     try {
-        const db = getDatabaseConnection(req.params.database);
-        const User = db.model('Users', UserSchema);
+        const User = getCollection(req.params.database, 'Users', UserSchema);
 
         const token = req.header('x-auth');
         const user = await User.findByToken(token);
@@ -27,6 +26,8 @@ const authenticate = async (req, res, next) => {
     }
 };
 
+const authHandler = process.env.JWT_AUTH === 'true' ? authenticate : (req, res, next) => next();
+
 module.exports = { 
-    authenticate
+    authHandler
 };

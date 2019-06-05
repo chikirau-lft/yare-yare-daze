@@ -1,13 +1,12 @@
 'use strict';
 
-const mongoose = require('mongoose');
 const express = require('express');
 const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
 const { ClientErrors } = require('../utils/errors.js');
-const { getDatabaseConnection } = require('../db/mongoose.js');
+const { getCollection } = require('../db/mongoose.js');
 
 const router = express.Router();
 router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req, res, next) => {
@@ -20,8 +19,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, async(req
         if (!ObjectId.isValid(_id))
             throw new Error(ClientErrors.INVALID_ID);
 
-        const db = getDatabaseConnection(req.params.database);
-        const collection = db.model(req.params.collection, CommonSchema);
+        const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
         const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
         if(!document)
@@ -42,8 +40,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, async(req, r
         const filter = req.query.filter !== undefined 
             ? JSON.parse(_.replace(req.query.filter, new RegExp("\'","g"), "\"")) : '';
 
-        const db = getDatabaseConnection(req.params.database);
-        const collection = db.model(req.params.collection, CommonSchema);
+        const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
         const documents = await collection.deleteMany(filter);
 
         return res.status(200).send({

@@ -2,24 +2,19 @@
 
 const expect = require('expect');
 const request = require('supertest');
-const mongoose = require('mongoose');
 const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
 const { CommonSchema } = require('../../models/common.js');
-const { items } = require('../../seed/seed.tests.js');
-const { getDatabaseConnection } = require('../../db/mongoose.js');
+const { items, populateItems } = require('../../seed/seed.tests.js');
+const { getCollection } = require('../../db/mongoose.js');
+const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 
-    beforeEach(async() => {
-        const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-        const collection = db.model(testCollection, CommonSchema);
-        await collection.deleteMany({});
-        await collection.insertMany(items);
-    });
+    beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
     
     it('should remove document from collection', done => {
         request(app)
@@ -36,8 +31,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
                 if(err)
                     return done(err);
 
-                const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-                const collection = db.model(testCollection, CommonSchema);
+                const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
                 const document = await collection.findById(items[0]._id);
             
                 expect(document).toBeNull();
@@ -62,12 +56,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, () => {
 
-    beforeEach(async() => {
-        const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-        const collection = db.model(testCollection, CommonSchema);
-        await collection.deleteMany({});
-        await collection.insertMany(items);
-    });
+    beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 
     it('should delete multiple documents specified by filter param', done => {
         request(app)
@@ -85,8 +74,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, (
                 if (err)
                     return done(err);
 
-                const db = getDatabaseConnection(process.env.MONGO_DATABASE);
-                const collection = db.model(testCollection, CommonSchema);
+                const collection =  getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
                 const documents = await collection.find({ TS: items[0] });
 
                 expect(documents).toEqual([]);
