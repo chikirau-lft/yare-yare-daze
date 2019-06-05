@@ -73,7 +73,10 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
     
 				counter++;
 				if (counter % 500 === 0) {
-					bulk.execute((err, r) => {           
+					bulk.execute((err, r) => {
+						if (err) {
+							throw new Error(err);
+						}         
 						bulk = collection.collection.initializeOrderedBulkOp();
 						counter = 0;
 					});
@@ -82,6 +85,9 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
     
 		if (counter > 0) {
 			bulk.execute((err, result) => {
+				if (err) {
+					throw new Error(err);
+				}
 				response.matched = result.nMatched;
 				response.modified = result.nModified;
 				response.deleted = result.nRemoved;

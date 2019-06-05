@@ -17,7 +17,7 @@ const JWTauthenticate = async (req, res, next) => {
 		}        
 		req.user = user;
 		req.token = token;
-		next();
+		return next();
 	} catch (e) {
 		return res.status(401).send({
 			statusCode: 401,

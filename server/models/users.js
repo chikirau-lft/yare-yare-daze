@@ -96,10 +96,10 @@ UserSchema.statics.findByCredentials = function(email, password) {
 
 		return new Promise((resolve, reject) => {
 			bcrypt.compare(password, user.password, (err, res) => {
-				if (res) {
-					resolve(user);
+				if (err || !res) { // verify this
+					reject();
 				}
-				reject();
+				resolve(user);
 			});
 		});
 	});
@@ -110,13 +110,19 @@ UserSchema.pre('save', function(next) {
 
 	if (user.isModified('password')) {
 		bcrypt.genSalt(10, (err, salt) => {
+			if (err) {
+				throw new Error(err);
+			}
 			bcrypt.hash(user.password, salt, (err, hash) => {
+				if (err) {
+					throw new Error(err);
+				}
 				user.password = hash;
 				next();
 			});
 		});
 	} else {
-		next(); 
+		return next(); 
 	}
 });
 
