@@ -322,3 +322,28 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 			.end(done);
 	});
 });
+
+describe(`GET /${process.env.APP_PREFIX}/users/me`, () => {
+
+	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+
+	it('should return document with specified _id field', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/me`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(200)
+			.expect(res => {
+				const item = _.omit(users[0], ['password', 'tokens']);
+				expect(res.body).toEqual(Object.assign({}, item, { _id: item._id.toHexString() }));
+			})
+			.end(done);
+	});
+
+	it('should return 401 if jwt token is invalid', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/me`)
+			.set('x-auth', users[0].tokens[0].token + 'doe,ew')
+			.expect(401)
+			.end(done);
+	});
+});
