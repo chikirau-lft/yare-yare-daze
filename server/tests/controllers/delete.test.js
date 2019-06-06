@@ -104,3 +104,36 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, (
 			.end(done);
 	});
 });
+
+describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, () => {
+	
+	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+
+	it('should remove token', done => {
+		request(app)
+			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/token`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					return done(err);
+				}
+
+				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);
+
+				User.findById(users[0]._id).then(user => {
+					expect(user.tokens.length).toBe(0);
+					done();
+				})
+					.catch(e => done(e));
+			});
+	});
+
+	it('should return 401 if token already deleted', done => {
+		request(app)
+			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/token`)
+			.set('x-auth', `${users[0].tokens[0].token }abf6`)
+			.expect(401)
+			.end(done);
+	});
+});
