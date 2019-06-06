@@ -154,7 +154,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 
 	it('should return default number of documents if pagesize params if over max', done => {
 		request(app)
-			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=9`)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?pagesize=9`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
@@ -175,7 +175,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 		const page = 2;
 
 		request(app)
-			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?&pagesize=${pagesize}&page=${page}`)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?pagesize=${pagesize}&page=${page}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
@@ -193,7 +193,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 
 	it('should return properties if count param is true', done => {
 		request(app)
-			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?&count=true`)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?count=true`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
