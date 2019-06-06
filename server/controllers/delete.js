@@ -10,6 +10,15 @@ const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
+router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, async (req, res) => {
+    try {
+        await req.user.removeToken(req.token);
+        res.status(200).send();
+    } catch (e) {
+        res.status(400).send();
+    }
+});
+
 router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res, next) => {
 	if (req.params._id === '*') {
 		return next('route');
