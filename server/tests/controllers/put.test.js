@@ -33,7 +33,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				expect(res.body).toMatchObject(json);
 			})
 			.end(async (err, res) => {
-				if(err) {
+				if (err) {
 					return done(err);
 				}
 
@@ -63,8 +63,8 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, () => {
 			.expect(res => {
 				expect(res.body).toMatchObject(json);
 			})
-			.end(async(err, res) => {
-				if(err) {
+			.end(async (err, res) => {
+				if (err) {
 					return done(err);
 				}
 

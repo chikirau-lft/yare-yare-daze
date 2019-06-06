@@ -10,13 +10,13 @@ const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res, next) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res, next) => {
 	if (req.params._id === '*') {
 		return next('route');
 	}
 
 	try {
-		const _id = req.params._id;
+		const { _id } = req.params;
 		const update = req.body;
 
 		if (!ObjectId.isValid(_id)) {
@@ -31,7 +31,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 		}
 
 		return res.status(200).send(document);
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message
@@ -40,7 +40,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 });
 
 // Bulk PATCH
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async(req, res) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res) => {
 	try {
 		const filter = req.query.filter !== undefined 
 			? JSON.parse(_.replace(req.query.filter, new RegExp('\'','g'), '"')) : '';
@@ -54,7 +54,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, 
 			modified: documents.nModified,
 			matched: documents.nModified === 0 ? documents.n : 0
 		});
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message

@@ -10,13 +10,13 @@ const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res, next) => {
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res, next) => {
 	if (req.params._id === '*') {
 		return next('route');
 	}
 
 	try {
-		const _id = req.params._id;
+		const { _id } = req.params;
 
 		if (!ObjectId.isValid(_id)) {
 			throw new Error(ClientErrors.INVALID_ID);
@@ -25,12 +25,12 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
-		if(!document) {
+		if (!document) {
 			return res.status(404).send();
 		}
  
 		return res.status(200).send(document);
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message
@@ -39,7 +39,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 });
 
 // Bulk DELETE
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async(req, res) => {
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res) => {
 	try {
 		const filter = req.query.filter !== undefined 
 			? JSON.parse(_.replace(req.query.filter, new RegExp('\'','g'), '"')) : '';
@@ -53,7 +53,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler,
 			modified: 0,
 			matched: 0
 		});
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message

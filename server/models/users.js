@@ -40,42 +40,42 @@ const UserSchema = new mongoose.Schema({
 	}]
 });
 
-UserSchema.methods.toJSON = function() {
+UserSchema.methods.toJSON = function () {
 	const user = this;
 	const userData = user.toObject();
 
 	return _.pick(userData, ['_id', 'email', 'username']);
 };
 
-UserSchema.methods.generateAuthToken = function() {
+UserSchema.methods.generateAuthToken = function () {
 	const user = this;
 	const access = 'auth';
 	const token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.JWT_SECRET).toString();
 
-	user.tokens.push({ access, token});
+	user.tokens.push({ access, token });
 
 	return user.save().then(() => token);
 };
 
-UserSchema.methods.removeToken = function(token) {
+UserSchema.methods.removeToken = function (token) {
 	const user = this;
 
 	return user.update({
 		$pull: {
 			tokens: {
-				token: token
+				token
 			}
 		}
 	});
 };
 
-UserSchema.statics.findByToken = function(token) {
+UserSchema.statics.findByToken = function (token) {
 	const user = this;
 	let decoded;
 
 	try {
 		decoded = jwt.verify(token, process.env.JWT_SECRET);
-	} catch(e) {
+	} catch (e) {
 		return Promise.reject();
 	}
 
@@ -86,7 +86,7 @@ UserSchema.statics.findByToken = function(token) {
 	});
 };
 
-UserSchema.statics.findByCredentials = function(email, password) {
+UserSchema.statics.findByCredentials = function (email, password) {
 	const user = this;
 
 	return user.findOne({ email }).then(user => {
@@ -105,7 +105,7 @@ UserSchema.statics.findByCredentials = function(email, password) {
 	});
 };
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
 	const user = this;
 
 	if (user.isModified('password')) {

@@ -19,7 +19,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
 	it('should insert documents if _id is not specified', done => {
-		let data = [{
+		const data = [{
 			text: 'text 1',
 			number: 2000
 		}, {
@@ -40,7 +40,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 					matched: 0
 				});
 			})
-			.end(async(err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}
@@ -48,7 +48,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({
 					_id: { $in: res.body._embedded.map(d => _.last(d.href.split('/'))) }
-				}, { '_id': 0 });
+				}, { _id: 0 });
 
 				expect(documents.map(d => d.toObject())).toEqual(data);
 				done();
@@ -56,7 +56,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 	});
 
 	it('should update documents if _id is specified', done => {
-		let data = [{
+		const data = [{
 			_id: items[items.length - 2]._id,
 			text: 'text 2',
 			number: 3000,
@@ -75,18 +75,18 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 			.expect(200)
 			.expect(res => {
 				const _embedded = data.map(d => { 
-					return { href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${d._id.toHexString()}`};
+					return { href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${d._id.toHexString()}` };
 				});
 				expect(res.body).toEqual({
-					_embedded: _embedded,
+					_embedded,
 					inserted: 0,
 					deleted: 0,
 					modified: data.length,
 					matched: data.length
 				});
 			})
-			.end(async(err, res) => {
-				if(err) {
+			.end(async (err, res) => {
+				if (err) {
 					return done(err);
 				}
 
@@ -101,7 +101,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 	});
 
 	it('should both update and insert', done => {
-		let data = [{
+		const data = [{
 			text: 'custom text',
 		}, {
 			_id: items[items.length - 1]._id,
@@ -123,8 +123,8 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 					matched: 1
 				});
 			})
-			.end(async(err, res) => {
-				if(err) {
+			.end(async (err, res) => {
+				if (err) {
 					return done(err);
 				}
 
@@ -164,7 +164,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
 				expect(res.body.email).toBe(email);
 			})
 			.end((err, res) => {
-				if(err) {
+				if (err) {
 					return done(err);
 				}
 
@@ -190,7 +190,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
 	});
 
 	it('should not create user if email in use', done => {
-		const email = users[0].email;
+		const [ email ] = users;
 		const password = 'userOnePass';
 
 		request(app)
@@ -214,7 +214,7 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 				expect(res.headers['x-auth']).toBeTruthy();
 			})
 			.end((err, res) => {
-				if(err) {
+				if (err) {
 					return done(err);
 				}
                 
@@ -226,7 +226,8 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 						token: res.headers['x-auth']
 					});
 					done();
-				}).catch(e => done(e));
+				})
+					.catch(e => done(e));
 			});
 	});
 
@@ -239,7 +240,7 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 				expect(res.headers['x-auth']).toBeFalsy();
 			})
 			.end((err, res) => {
-				if(err) {
+				if (err) {
 					return done(err);
 				}
 
@@ -248,7 +249,8 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 				User.findById(users[1]._id).then(user => {
 					expect(user.tokens.length).toBe(1);
 					done();
-				}).catch(e => done(e));
+				})
+					.catch(e => done(e));
 			});
 	});
 });

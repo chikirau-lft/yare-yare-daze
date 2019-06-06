@@ -74,6 +74,36 @@
         "func-call-spacing": ["error", "never"],
         "func-name-matching": ["error", "always"],
         "func-style": ["error", "expression"],
-        "implicit-arrow-linebreak": ["error", "beside"]
+        "implicit-arrow-linebreak": ["error", "beside"],
+        "key-spacing": ["error", { "mode": "strict" }],
+        "keyword-spacing": ["error", { "before": true, "after": true }],
+        "lines-between-class-members": ["error", "always"],
+        "new-parens": "error",
+        "newline-per-chained-call": ["error", { "ignoreChainWithDepth": 2 }],
+        "no-continue": "error",
+        "no-multi-assign": "error",
+        "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+        "no-whitespace-before-property": "error",
+        "object-curly-spacing": ["error", "always"],
+        "quote-props": ["error", "as-needed"],
+        "semi-spacing": "error",
+        "semi-style": ["error", "last"],
+        "space-before-blocks": "error",
+        "space-before-function-paren": "error",
+        "arrow-parens": ["error", "as-needed"],
+        "no-dupe-class-members": "error",
+        "no-var": "error",
+        "object-shorthand": "error",
+        "prefer-const": "error",
+        "prefer-destructuring": ["error", {
+                "array": true,
+                "object": true
+            }, {
+                "enforceForRenamedProperties": false
+            }
+        ],
+        "prefer-spread": "error",
+        "prefer-template": "error",
+        "rest-spread-spacing": ["error", "never"]
     }
 }

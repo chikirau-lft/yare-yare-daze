@@ -26,9 +26,9 @@ router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
 	});
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res) => {
 	try {
-		const _id = req.params._id;
+		const { _id } = req.params;
 
 		if (!ObjectId.isValid(_id)) {
 			throw new Error(ClientErrors.INVALID_ID);
@@ -42,7 +42,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 		}
 
 		return res.status(200).send(document);
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message
@@ -50,7 +50,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 	}
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async(req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res) => {
 	try {
 		const filter = parseFilter(req.query.filter);
 		const sort = parseSort(req.query.sort);
@@ -69,10 +69,16 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 			.sort(sort);
 
 		const response = req.query.np === '' ? documents 
-			: generateProperties(documents, req.params.collection, await collection.countDocuments({}), pagesize, count);
+			: generateProperties(
+				documents, 
+				req.params.collection, 
+				await collection.countDocuments({}), 
+				pagesize, 
+				count
+			);
 
 		return res.send(response);
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message

@@ -10,7 +10,7 @@ const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
-router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
+router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res) => {
 	try {
 		const User = getCollection(req.params.database, 'Users', UserSchema);
 		const body = _.pick(req.body, ['email', 'username', 'password']);
@@ -19,7 +19,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async(req, res) => {
 		await user.save();
 		const token = await user.generateAuthToken();
 		res.header('x-auth', token).send(user);
-	} catch(e) {
+	} catch (e) {
 		res.status(400).send(e);
 	}
 });
@@ -32,12 +32,12 @@ router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res)
 		const token = await user.generateAuthToken();
     
 		res.header('x-auth', token).send(user);
-	} catch(e) {
+	} catch (e) {
 		res.status(400).send();
 	}
 });
 
-router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async(req, res) => {
+router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res) => {
 	try {
 		const updateDocs = req.body.filter(doc => doc._id !== undefined);
 		const insertDocs = req.body.filter(doc => doc._id === undefined);
@@ -48,7 +48,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 		let bulk = collection.collection.initializeOrderedBulkOp();
 		let counter = 0;
 
-		let response = {
+		const response = {
 			_embedded: [],
 			inserted: insertDocs.length,
 			deleted: 0,
@@ -56,7 +56,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 			matched: 0
 		};
 
-		for(const doc of insertedDocs) {
+		for (const doc of insertedDocs) {
 			response._embedded.push({
 				href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${req.params.collection}/${doc._id}`
 			});
@@ -96,7 +96,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 		} else {
 			return res.status(200).send(response);
 		}
-	} catch(e) {
+	} catch (e) {
 		return res.status(400).send({
 			statusCode: 400,
 			ERROR: e.message

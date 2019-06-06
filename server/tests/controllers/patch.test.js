@@ -26,7 +26,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 				'array.1': 322,
 				'array.2': 228,
 				'obj.a': 11111,
-				'TS': 0
+				TS: 0
 			})
 			.expect(200)
 			.expect(res => {
@@ -43,7 +43,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[4]._id}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
-				'$push': { 'array': 700 }
+				$push: { array: 700 }
 			})
 			.expect(200)
 			.expect(res => {
@@ -60,7 +60,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 				'array.1': 322,
 				'array.2': 228,
 				'obj.a': 11111,
-				'TS': 0
+				TS: 0
 			})
 			.expect(400)
 			.end(done);
@@ -74,7 +74,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 				'array.1': 322,
 				'array.2': 228,
 				'obj.a': 11111,
-				'TS': 0
+				TS: 0
 			})
 			.expect(404)
 			.end(done);
@@ -102,7 +102,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, 
 					matched: 0
 				});
 			})
-			.end(async(err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}

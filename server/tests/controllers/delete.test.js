@@ -30,8 +30,8 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))[0]
 				);
 			})
-			.end(async(err, res) => {
-				if(err) {
+			.end(async (err, res) => {
+				if (err) {
 					return done(err);
 				}
 
@@ -78,7 +78,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, (
 					matched: 0
 				});
 			})
-			.end(async(err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}

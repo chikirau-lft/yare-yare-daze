@@ -1,7 +1,7 @@
 'use strict';
 
 const generateProperties = (_embedded, _id, _size, pagesize, count) => {
-	let properties = {
+	const properties = {
 		_embedded,
 		_id,
 		_returned: _embedded.length
