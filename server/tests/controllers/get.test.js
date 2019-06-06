@@ -326,8 +326,13 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 describe(`GET /${process.env.APP_PREFIX}/users/me`, () => {
 
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	before(function() {
+		if (process.env.JWT_AUTH !== 'true') {
+			this.skip();
+		}
+	});
 
-	it('should return document with specified _id field', done => {
+	it('should return logged user info', done => {
 		request(app)
 			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/me`)
 			.set('x-auth', users[0].tokens[0].token)

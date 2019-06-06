@@ -108,6 +108,11 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, (
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, () => {
 	
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	before(function() {
+		if (process.env.JWT_AUTH !== 'true') {
+			this.skip();
+		}
+	});
 
 	it('should remove token', done => {
 		request(app)
