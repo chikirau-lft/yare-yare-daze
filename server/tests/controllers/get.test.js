@@ -93,7 +93,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 
 	it('should return 400 if filter param is invalid JSON string', done => {
 		request(app)
-			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={ ID': '${items[0].ID}'`)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID: '${items[0].ID}'}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(400)
 			.expect(res => {
@@ -326,7 +326,7 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 describe(`GET /${process.env.APP_PREFIX}/users/me`, () => {
 
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
-	before(function() {
+	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {
 			this.skip();
 		}
@@ -347,7 +347,7 @@ describe(`GET /${process.env.APP_PREFIX}/users/me`, () => {
 	it('should return 401 if jwt token is invalid', done => {
 		request(app)
 			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/me`)
-			.set('x-auth', users[0].tokens[0].token + 'doe,ew')
+			.set('x-auth', `${users[0].tokens[0].token }doe,ew`)
 			.expect(401)
 			.end(done);
 	});

@@ -1,7 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
-const { arrayToObject } = require('./utils.js');
+const { arrayToObject, strToObj } = require('./utils.js');
 
 const parseFilter = filterParam => {
 	if (filterParam === undefined) {
@@ -24,12 +24,11 @@ const parseFilter = filterParam => {
 		const json = _.replace(jsonString, new RegExp('\'','g'), '"');
 		return JSON.parse(json);
 	}
-	return JSON.parse(_.replace(filter, new RegExp('\'','g'), '"'));
+	return strToObj(filterParam);
 };
 
 const parseSort = sort => {
-	return sort !== undefined 
-		? JSON.parse(_.replace(sort, new RegExp('\'','g'), '"')) : process.env.DEFAULT_SORT;
+	return sort !== undefined ? strToObj(sort) : process.env.DEFAULT_SORT;
 };
 
 const parsePagesize = pagesize => {
@@ -46,13 +45,11 @@ const parseCount = count => {
 };
 
 const parseKeys = keys => {
-	return typeof keys === 'object' 
-		? arrayToObject(keys) : keys !== undefined ? JSON.parse(_.replace(keys, new RegExp('\'','g'), '"')) : process.env.DEFAULT_KEYS;
+	return typeof keys === 'object' ? arrayToObject(keys) : keys !== undefined ? strToObj(keys) : process.env.DEFAULT_KEYS;
 };
 
 const parseHint = hint => {
-	return typeof hint === 'object' 
-		? hint.join(' ') : hint !== undefined ? JSON.parse(_.replace(hint, new RegExp('\'','g'), '"')) : process.env.DEFAULT_HINT;
+	return typeof hint === 'object' ? hint.join(' ') : hint !== undefined ? strToObj(hint) : process.env.DEFAULT_HINT;
 };
 
 module.exports = {

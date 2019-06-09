@@ -1,9 +1,21 @@
 'use strict';
 
+const vm = require('vm');
+
 const arrayToObject = array => {
 	return array
 		.map(element => JSON.parse(element))
 		.reduce((obj, item) => ({ ...obj, ...item }));
+};
+
+const strToObj = str => {
+	if (str || typeof str ==='string') {
+		const sandbox = { obj: {} };
+		vm.createContext(sandbox);
+		vm.runInContext(`obj = ${ str.match(/\{(.)+\}/g)}`, sandbox);
+		return sandbox.obj;
+	}
+	return {};
 };
 
 const curry = fn => {
@@ -20,5 +32,6 @@ const curry = fn => {
 
 module.exports = {
 	arrayToObject,
+	strToObj,
 	curry
 };
