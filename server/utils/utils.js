@@ -13,6 +13,7 @@ const stringToObject = str => {
 		const sandbox = { obj: {} };
 		vm.createContext(sandbox);
 		vm.runInContext(`obj = ${str.match(/\{(.)+\}/g)}`, sandbox);
+		
 		return sandbox.obj;
 	}
 	return {};

@@ -19,7 +19,8 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res) => {
         
 		await user.save();
 		const token = await user.generateAuthToken();
-		return res.header('x-auth', token).status(200).send(user);
+		return res.header('x-auth', token).status(200)
+			.send(user);
 	} catch (e) {
 		return errorResponse(res, 400, e.message);
 	}
@@ -32,7 +33,8 @@ router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res)
 		const user = await User.findByCredentials(body.email, body.password);
 		const token = await user.generateAuthToken();
     
-		return res.header('x-auth', token).status(200).send(user);
+		return res.header('x-auth', token).status(200)
+			.send(user);
 	} catch (e) {
 		return errorResponse(res, 400, e.message);
 	}

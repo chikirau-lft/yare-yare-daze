@@ -65,8 +65,8 @@ const items = [{
 	TS: 1493647468918,
 	array: [ 1, 2, 3, 4, 5 ],
 	obj: {
-		a: 10,
-		b: 20
+		a: 8,
+		b: 10
 	}
 }, {
 	_id: new ObjectID(),
@@ -74,8 +74,8 @@ const items = [{
 	TS: 1493647468933,
 	array: [ 1, 2, 3, 4, 5 ],
 	obj: {
-		a: 10,
-		b: 20
+		a: 3,
+		b: 5
 	}
 }, {
 	_id: new ObjectID(),
@@ -84,7 +84,7 @@ const items = [{
 	array: [ 1, 2, 3, 4, 5 ],
 	obj: {
 		a: 10,
-		b: 20
+		b: 2
 	}
 }, {
 	_id: new ObjectID(),
@@ -92,7 +92,7 @@ const items = [{
 	TS: 1493647468922,
 	array: [ 1, 2, 3, 4, 5 ],
 	obj: {
-		a: 10,
+		a: 1,
 		b: 20
 	}
 }];

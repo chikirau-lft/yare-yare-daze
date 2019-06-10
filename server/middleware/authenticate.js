@@ -2,6 +2,7 @@
 
 const { UserSchema } = require('./../models/users.js');
 const { getCollection } = require('./../db/mongoose.js');
+const { errorResponse } = require('./../utils/errors.js');
 
 const JWTauthenticate = async (req, res, next) => {
 	try {
@@ -10,19 +11,13 @@ const JWTauthenticate = async (req, res, next) => {
 		const token = req.header('x-auth');
 		const user = await User.findByToken(token);
 		if (!user) {
-			return res.status(401).send({
-				statusCode: 401,
-				ERROR: 'Unauthorized'
-			});          
+			return errorResponse(res, 401, 'Unauthorized');     
 		}        
 		req.user = user;
 		req.token = token;
 		return next();
 	} catch (e) {
-		return res.status(401).send({
-			statusCode: 401,
-			ERROR: 'Unauthorized'
-		});
+		return errorResponse(res, 401, 'Unauthorized'); 
 	}
 };
 

@@ -3,23 +3,7 @@
 const { arrayToObject, stringToObject } = require('./utils.js');
 
 const parseFilter = filter => {
-	if (filter === undefined) {
-		return process.env.DEFAULT_FILTER;
-	}
-
-	const start = filter.indexOf('['); 
-	const end = filter.indexOf(']');
-
-	if (start !== -1 && end !== -1) {
-		const arr = filter
-			.substring(start + 1, end)
-			.split('}')
-			.filter(s => s !== '')
-			.map(s => `${s}}`.replace(/^,|,$/g,'').trim());
-		
-		return stringToObject(`${filter.substring(0, start)}[${arr.join(',')}]}`);
-	}
-	return stringToObject(filter);
+	return filter !== undefined ? stringToObject(filter) : process.env.DEFAULT_FILTER;
 };
 
 const parseSort = sort => {

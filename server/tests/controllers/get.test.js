@@ -91,6 +91,42 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.end(done);
 	});
 
+	it('should return filtered documnts if filter params is regex expression', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={"ID": {'$regex': /2C$/}}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(200)
+			.expect(res => {
+				expect(res.body._returned).toBe(items.filter(s => s.ID.match(/2C$/)).length);
+				expect(res.body._size).toBe(undefined);
+				expect(res.body._total_pages).toBe(undefined);
+				expect(res.body._embedded).toEqual(
+					items
+						.filter(s => s.ID.match(/2C$/))
+						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+				);
+			})
+			.end(done);
+	});
+
+	it('should return filtered documnts if filter params is $and expression', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$and':[{'obj.a':{'$lte':9}}]}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(200)
+			.expect(res => {
+				expect(res.body._returned).toBe(items.filter(s => s.obj.a < 9).length);
+				expect(res.body._size).toBe(undefined);
+				expect(res.body._total_pages).toBe(undefined);
+				expect(res.body._embedded).toEqual(
+					items
+						.filter(s => s.obj.a < 9)
+						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+				);
+			})
+			.end(done);
+	});
+
 	it('should return 400 if filter param is empty array', done => {
 		request(app)
 			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or': []}`)
