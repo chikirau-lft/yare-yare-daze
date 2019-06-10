@@ -2,7 +2,8 @@
 
 const ClientErrors = Object.freeze({
 	INVALID_ID: 'Provided _id is not valid ObjectID field',
-	INVALID_CREDENTIALS: 'Provided credentials are not valid'
+	INVALID_CREDENTIALS: 'Provided credentials are not valid',
+	INVALID_JWT: 'Provided jwt token is not valid or have already expired'
 });
 
 const errorResponse = (res, status, message) => {

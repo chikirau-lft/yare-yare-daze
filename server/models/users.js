@@ -49,14 +49,15 @@ UserSchema.methods.toJSON = function () {
 	return _.pick(userData, ['_id', 'email', 'username']);
 };
 
-UserSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAuthToken = async function () {
 	const user = this;
 	const access = 'auth';
 	const token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.JWT_SECRET).toString();
 
 	user.tokens.push({ access, token });
+	await user.save()
 
-	return user.save().then(() => token);
+	return token;
 };
 
 UserSchema.methods.removeToken = function (token) {
@@ -78,7 +79,7 @@ UserSchema.statics.findByToken = function (token) {
 	try {
 		decoded = jwt.verify(token, process.env.JWT_SECRET);
 	} catch (e) {
-		return Promise.reject();
+		return Promise.reject(ClientErrors.INVALID_JWT);
 	}
 
 	return user.findOne({
