@@ -5,6 +5,7 @@ const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
 const { getCollection } = require('../db/mongoose.js');
+const { errorResponse } = require('./../utils/errors.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
@@ -17,15 +18,12 @@ router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 			{ ...req.body } , { upsert: true, useFindAndModify: false, new: true });
 
 		if (!document) {
-			return res.status(404).send();
+			return errorResponse(res, 404, 'Not Found');
 		}
 
 		return res.status(200).send(document);
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});   
+		return errorResponse(res, 400, e.message); 
 	}
 });
 

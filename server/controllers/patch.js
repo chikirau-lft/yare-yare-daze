@@ -5,7 +5,7 @@ const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { ClientErrors } = require('../utils/errors.js');
+const { ClientErrors, errorResponse } = require('../utils/errors.js');
 const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
@@ -27,15 +27,12 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 		const document = await collection.findOneAndUpdate({ _id }, update , { new: true, useFindAndModify: false });
 
 		if (!document) {
-			return res.status(404).send();
+			return errorResponse(res, 404, 'Not Found');
 		}
 
 		return res.status(200).send(document);
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});
+		return errorResponse(res, 400, e.message);
 	}
 });
 
@@ -55,10 +52,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, 
 			matched: documents.nModified === 0 ? documents.n : 0
 		});
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});
+		return errorResponse(res, 400, e.message);
 	}
 });
 

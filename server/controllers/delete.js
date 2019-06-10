@@ -5,7 +5,7 @@ const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { ClientErrors } = require('../utils/errors.js');
+const { ClientErrors, errorResponse } = require('../utils/errors.js');
 const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
@@ -13,9 +13,9 @@ const router = express.Router();
 router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, async (req, res) => {
 	try {
 		await req.user.removeToken(req.token);
-		res.status(200).send();
+		return res.status(200).send();
 	} catch (e) {
-		res.status(400).send();
+		return errorResponse(res, 400, e.message);
 	}
 });
 
@@ -35,15 +35,12 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
 		if (!document) {
-			return res.status(404).send();
+			return errorResponse(res, 404, 'Not Found');
 		}
  
 		return res.status(200).send(document);
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});
+		return errorResponse(res, 400, e.message);
 	}
 });
 
@@ -63,10 +60,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler,
 			matched: 0
 		});
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});
+		return errorResponse(res, 400, e.message);
 	}
 });
 

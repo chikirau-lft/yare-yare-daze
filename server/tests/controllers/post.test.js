@@ -149,6 +149,11 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
     
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	before(function () {
+		if (process.env.JWT_AUTH !== 'true') {
+			this.skip();
+		}
+	});
 
 	it('should create a user', done => {
 		const email = 'dog123321@ukr.net';
@@ -204,6 +209,11 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
 describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/login`, () => {
 
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	before(function () {
+		if (process.env.JWT_AUTH !== 'true') {
+			this.skip();
+		}
+	});
 
 	it('should return logged user', done => {
 		request(app)

@@ -1,6 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
 const { arrayToObject, stringToObject } = require('./utils.js');
 
 const parseFilter = filter => {

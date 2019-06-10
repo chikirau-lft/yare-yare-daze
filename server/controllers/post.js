@@ -7,6 +7,7 @@ const { ObjectID } = require('mongodb');
 const { CommonSchema } = require('../models/common.js');
 const { UserSchema } = require('./../models/users.js');
 const { getCollection } = require('../db/mongoose.js');
+const { errorResponse } = require('./../utils/errors.js');
 const { authHandler } = require('../middleware/authenticate.js');
 
 const router = express.Router();
@@ -18,9 +19,9 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res) => {
         
 		await user.save();
 		const token = await user.generateAuthToken();
-		res.header('x-auth', token).send(user);
+		return res.header('x-auth', token).status(200).send(user);
 	} catch (e) {
-		res.status(400).send(e);
+		return errorResponse(res, 400, e.message);
 	}
 });
 
@@ -31,9 +32,9 @@ router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res)
 		const user = await User.findByCredentials(body.email, body.password);
 		const token = await user.generateAuthToken();
     
-		res.header('x-auth', token).send(user);
+		return res.header('x-auth', token).status(200).send(user);
 	} catch (e) {
-		res.status(400).send();
+		return errorResponse(res, 400, e.message);
 	}
 });
 
@@ -97,10 +98,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 			return res.status(200).send(response);
 		}
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});   
+		return errorResponse(res, 400, e.message);
 	}
 });
 

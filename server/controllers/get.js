@@ -4,7 +4,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { ClientErrors } = require('../utils/errors.js');
+const { ClientErrors, errorResponse } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middleware/authenticate.js');
@@ -42,15 +42,12 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 		const document = await collection.findOne({ _id });
 
 		if (!document) {
-			return res.status(404).send();
+			return errorResponse(res, 404, 'Not Found');
 		}
 
 		return res.status(200).send(document);
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});
+		return errorResponse(res, 400, e.message);
 	}
 });
 
@@ -83,10 +80,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 
 		return res.send(response);
 	} catch (e) {
-		return res.status(400).send({
-			statusCode: 400,
-			ERROR: e.message
-		});
+		return errorResponse(res, 400, e.message);
 	}
 });
 
