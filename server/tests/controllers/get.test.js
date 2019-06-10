@@ -57,7 +57,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 
 	it('should return filtered documnts if filter params is coma separated array', done => {
 		request(app)
-			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or':[{'ID': '${items[0].ID}'}, {'ID': '${items[2].ID}'}]}`)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or':[{'ID': '${items[0].ID}'},{'ID': '${items[2].ID}'}]}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
@@ -87,6 +87,17 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 						.filter(item => item.ID === items[0].ID || item.ID === items[2].ID)
 						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
 				);
+			})
+			.end(done);
+	});
+
+	it('should return 400 if filter param is empty array', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or': []}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
 			})
 			.end(done);
 	});

@@ -8,11 +8,11 @@ const arrayToObject = array => {
 		.reduce((obj, item) => ({ ...obj, ...item }));
 };
 
-const strToObj = str => {
-	if (str || typeof str ==='string') {
+const stringToObject = str => {
+	if (str || typeof str === 'string') {
 		const sandbox = { obj: {} };
 		vm.createContext(sandbox);
-		vm.runInContext(`obj = ${ str.match(/\{(.)+\}/g)}`, sandbox);
+		vm.runInContext(`obj = ${str.match(/\{(.)+\}/g)}`, sandbox);
 		return sandbox.obj;
 	}
 	return {};
@@ -32,6 +32,6 @@ const curry = fn => {
 
 module.exports = {
 	arrayToObject,
-	strToObj,
+	stringToObject,
 	curry
 };
