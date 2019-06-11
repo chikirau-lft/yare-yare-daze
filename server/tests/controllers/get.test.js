@@ -250,6 +250,17 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.end(done);
 	});
 
+	it('should return 400 if pagesize param is NaN', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?pagesize=joibdso`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
+			})
+			.end(done);
+	});
+
 	it('should return certain page if page param is specified', done => {
 		const pagesize = 3;
 		const page = 2;
@@ -267,6 +278,39 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 						.slice(page * pagesize - pagesize, page * pagesize)
 						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
 				);
+			})
+			.end(done);
+	});
+
+	it('should return 400 if page param less than 0', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?page=-23`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
+			})
+			.end(done);
+	});
+
+	it('should return 400 if page param is 0', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?pagesize=0`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
+			})
+			.end(done);
+	});
+
+	it('should return 400 if page param is NaN', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?page=string`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
 			})
 			.end(done);
 	});

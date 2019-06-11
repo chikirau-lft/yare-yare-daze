@@ -12,15 +12,23 @@ const parseSort = sort => {
 };
 
 const parsePagesize = pagesize => {
-	if (Number(pagesize) <= 0) {
+	if (pagesize === undefined || Number(pagesize) > Number(process.env.MAX_PAGESIZE)) {
+		return Number(process.env.DEFAULT_PAGESIZE);
+	} else if (Number(pagesize) <= 0 || isNaN(Number(pagesize))) {
 		throw new Error(ClientErrors.INVALID_PAGESIZE);
 	}
-	return pagesize === undefined || Number(pagesize) > Number(process.env.MAX_PAGESIZE)
-		? Number(process.env.DEFAULT_PAGESIZE) : Number(pagesize);
+
+	return  Number(pagesize)
 };
 
 const parsePage = page => {
-	return page !== undefined ? Number(page) : Number(process.env.DEFAULT_PAGENUM); 
+	if (page === undefined) {
+		return Number(process.env.DEFAULT_PAGENUM)
+	} else if (Number(page) <= 0 || isNaN(Number(page))) {
+		throw new Error(ClientErrors.INVALID_PAGE);
+	}
+
+	return Number(page); 
 };
 
 const parseCount = count => {

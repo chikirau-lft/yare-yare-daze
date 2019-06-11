@@ -63,11 +63,11 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
 		const documents = await collection.find(filter)
+			.skip(page * pagesize - pagesize)
 			.select(keys)
 			.hint(hint)
-			.skip(isNaN(page) ? Number(process.env.DEFAULT_PAGENUM) : page * pagesize - pagesize)
-			.limit(pagesize)
-			.sort(sort);
+			.sort(sort)
+			.limit(pagesize);
 
 		const response = req.query.np === '' ? documents 
 			: generateProperties(
