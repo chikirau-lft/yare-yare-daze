@@ -3,7 +3,7 @@
 const { arrayToObject, stringToObject } = require('./utils.js');
 
 const parseFilter = filter => {
-	return filter !== undefined ? stringToObject(filter) : process.env.DEFAULT_FILTER;
+	return stringToObject(filter !== undefined ? filter : process.env.DEFAULT_FILTER);
 };
 
 const parseSort = sort => {

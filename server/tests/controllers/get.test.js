@@ -91,7 +91,7 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.end(done);
 	});
 
-	it('should return filtered documnts if filter params is $and expression', done => {
+	it('should return filtered documnts if filter params is $and expression with 1 item', done => {
 		request(app)
 			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$and':[{'obj.a':{'$lte':9}}]}`)
 			.set('x-auth', users[0].tokens[0].token)
@@ -109,7 +109,36 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.end(done);
 	});
 
-	it('should return 400 if filter param is empty array', done => {
+	it('should return filtered documnts if filter params is $and expression with 2 items', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$and':[{'obj.a':{'$lte':9}}, {'ID':{'$regex': /2C$/}}]}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(200)
+			.expect(res => {
+				expect(res.body._returned).toBe(items.filter(s => s.obj.a < 9 && s.ID.match(/2C$/)).length);
+				expect(res.body._size).toBe(undefined);
+				expect(res.body._total_pages).toBe(undefined);
+				expect(res.body._embedded).toEqual(
+					items
+						.filter(s => s.obj.a < 9 && s.ID.match(/2C$/))
+						.map(item => Object.assign({}, item, { _id: item._id.toHexString() }))
+				);
+			})
+			.end(done);
+	});
+
+	it('should return 400 if filter param with $and operator is empty array', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$and': []}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
+			})
+			.end(done);
+	});
+
+	it('should return 400 if filter param with $or operator is empty array', done => {
 		request(app)
 			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?filter={'$or': []}`)
 			.set('x-auth', users[0].tokens[0].token)

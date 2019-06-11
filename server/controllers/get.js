@@ -62,7 +62,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 		const hint = parseHint(req.query.hint);
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
-		const documents = await collection.find(filter === '' ? {} : filter)
+		const documents = await collection.find(filter)
 			.select(keys)
 			.hint(hint)
 			.skip(isNaN(page) ? Number(process.env.DEFAULT_PAGENUM) : page * pagesize - pagesize)
