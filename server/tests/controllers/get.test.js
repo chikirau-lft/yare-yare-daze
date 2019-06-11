@@ -228,6 +228,28 @@ describe(`GET /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/:collecti
 			.end(done);
 	});
 
+	it('should return 400 if pagesize param is 0', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?pagesize=0`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
+			})
+			.end(done);
+	});
+
+	it('should return 400 if pagesize param less than 0', done => {
+		request(app)
+			.get(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}?pagesize=-23`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({ statusCode: 400 });
+			})
+			.end(done);
+	});
+
 	it('should return certain page if page param is specified', done => {
 		const pagesize = 3;
 		const page = 2;

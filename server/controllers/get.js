@@ -66,7 +66,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 			.select(keys)
 			.hint(hint)
 			.skip(isNaN(page) ? Number(process.env.DEFAULT_PAGENUM) : page * pagesize - pagesize)
-			.limit(isNaN(pagesize) ? Number(process.env.DEFAULT_PAGESIZE) : pagesize)
+			.limit(pagesize)
 			.sort(sort);
 
 		const response = req.query.np === '' ? documents 

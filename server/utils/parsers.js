@@ -1,5 +1,6 @@
 'use strict';
 
+const { ClientErrors } = require('./errors.js');
 const { arrayToObject, stringToObject } = require('./utils.js');
 
 const parseFilter = filter => {
@@ -11,7 +12,10 @@ const parseSort = sort => {
 };
 
 const parsePagesize = pagesize => {
-	return pagesize === undefined || Number(pagesize) > Number(process.env.MAX_PAGESIZE) 
+	if (Number(pagesize) <= 0) {
+		throw new Error(ClientErrors.INVALID_PAGESIZE);
+	}
+	return pagesize === undefined || Number(pagesize) > Number(process.env.MAX_PAGESIZE)
 		? Number(process.env.DEFAULT_PAGESIZE) : Number(pagesize);
 };
 
