@@ -12,7 +12,7 @@ const stringToObject = str => {
 	if (str || typeof str === 'string') {
 		const sandbox = { obj: {} };
 		vm.createContext(sandbox);
-		vm.runInContext(`obj = ${str.match(/\{(.)+\}/g)}`, sandbox);
+		vm.runInContext(`obj = ${str.split('}{').join('},{').match(/\{(.)+\}/g)}`, sandbox);
 		
 		return sandbox.obj;
 	}

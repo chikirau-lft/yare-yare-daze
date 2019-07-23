@@ -28,7 +28,7 @@ const httpServer = http.createServer(app);
 const port = process.env.PORT || 5000;
 httpServer.listen(port, async () => {
     const time = moment().format('MMMM Do YYYY, h:mm:ss a');
-    const message = `Server is up. HTTP connections is listened on port ${port}, date - ${time}\n`;
+    const message = `Server is up.HTTP connections is listened on port ${port}, date - ${time}\n`;
     
     await appendFile('logs.txt', message);
 });
