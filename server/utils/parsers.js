@@ -18,12 +18,12 @@ const parsePagesize = pagesize => {
 		throw new Error(ClientErrors.INVALID_PAGESIZE);
 	}
 
-	return  Number(pagesize)
+	return Number(pagesize);
 };
 
 const parsePage = page => {
 	if (page === undefined) {
-		return Number(process.env.DEFAULT_PAGENUM)
+		return Number(process.env.DEFAULT_PAGENUM);
 	} else if (Number(page) <= 0 || isNaN(Number(page))) {
 		throw new Error(ClientErrors.INVALID_PAGE);
 	}
