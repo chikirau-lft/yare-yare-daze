@@ -37,9 +37,16 @@ const find = (array, element) => {
 	return _.find(array, e => e === element);
 };
 
+const map = fn => {
+	return array => { 
+		return array.map(fn);
+	};
+};
+
 module.exports = {
 	arrayToObject,
 	stringToObject,
 	curry,
-	find
+	find,
+	map
 };

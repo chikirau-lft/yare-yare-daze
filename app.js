@@ -13,19 +13,24 @@ const cors = require('cors');
 const _ = require('lodash');
 
 const appendFile = util.promisify(fs.appendFile);
-const stubMidlleware = async (req, res, next) => next();
 const { logger } = require('./server/middleware/logs.js');
 const { find } = require('./server/utils/utils.js');
+const { middleware } = require('./server/constants/middleware.js');
+const { httpMethods } = require('./server/constants/http.js');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(logger);
-app.use(find(process.env.METHODS.split(',').map(_.trim), 'GET') !== undefined ? require('./server/controllers/get.js') : stubMidlleware);
-app.use(find(process.env.METHODS.split(',').map(_.trim), 'POST') !== undefined ? require('./server/controllers/post.js') : stubMidlleware);
-app.use(find(process.env.METHODS.split(',').map(_.trim), 'PUT') !== undefined ? require('./server/controllers/put.js') : stubMidlleware);
-app.use(find(process.env.METHODS.split(',').map(_.trim), 'PATCH') !== undefined ? require('./server/controllers/patch.js') : stubMidlleware);
-app.use(find(process.env.METHODS.split(',').map(_.trim), 'DELETE') !== undefined ? require('./server/controllers/delete.js') : stubMidlleware);
+
+(async () => {
+    const methodsArr = await httpMethods();
+    app.use(find(methodsArr, 'GET') !== undefined ? require('./server/controllers/get.js') : middleware);
+    app.use(find(methodsArr, 'POST') !== undefined ? require('./server/controllers/post.js') : middleware);
+    app.use(find(methodsArr, 'PUT') !== undefined ? require('./server/controllers/put.js') : middleware);
+    app.use(find(methodsArr, 'PATCH') !== undefined ? require('./server/controllers/patch.js') : middleware);
+    app.use(find(methodsArr, 'DELETE') !== undefined ? require('./server/controllers/delete.js') : middleware);
+})();
 
 const httpServer = http.createServer(app);
 const port = process.env.PORT || 5000;
