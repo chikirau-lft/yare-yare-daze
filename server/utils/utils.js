@@ -2,6 +2,8 @@
 
 const vm = require('vm');
 
+const _ = require('lodash');
+
 const arrayToObject = array => {
 	return array
 		.map(element => JSON.parse(element))
@@ -31,8 +33,13 @@ const curry = fn => {
 	};
 };
 
+const find = (array, element) => {
+	return _.find(array, e => e === element);
+};
+
 module.exports = {
 	arrayToObject,
 	stringToObject,
-	curry
+	curry,
+	find
 };
