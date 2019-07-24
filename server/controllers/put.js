@@ -6,7 +6,7 @@ const { ObjectID } = require('mongodb');
 const { CommonSchema } = require('../models/common.js');
 const { getCollection } = require('../db/mongoose.js');
 const { errorResponse } = require('./../utils/errors.js');
-const { authHandler } = require('../middleware/authenticate.js');
+const { authHandler } = require('../constants/middleware.js');
 
 const router = express.Router();
 router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res) => {

@@ -8,7 +8,7 @@ const { CommonSchema } = require('../models/common.js');
 const { UserSchema } = require('./../models/users.js');
 const { getCollection } = require('../db/mongoose.js');
 const { errorResponse } = require('./../utils/errors.js');
-const { authHandler } = require('../middleware/authenticate.js');
+const { authHandler } = require('../constants/middleware.js');
 
 const router = express.Router();
 router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res) => {

@@ -21,8 +21,6 @@ const JWTauthenticate = async (req, res, next) => {
 	}
 };
 
-const authHandler = process.env.JWT_AUTH === 'true' ? JWTauthenticate : (req, res, next) => next();
-
 module.exports = { 
-	authHandler
+	JWTauthenticate
 };
