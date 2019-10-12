@@ -1,15 +1,7 @@
-# node-restHeart
+# mongoClient
 
 Implementation of RESTHeart API(for more information visit https://restheart.org/)
 in Node.js http server.
-
-### Pre-requisites
-
-To run the application you must have installed:
-
-1) [node.js](https://nodejs.org/en/) >= v8.10.0 
-
-2) [mongoDB](https://www.mongodb.com/) >= 3.6
 
 ## Development server
 Run `npm install`. Then run `npm run start` for a dev server. Navigate to `http://localhost:3000/${APP_PREFIX}/:database/:collection`.
