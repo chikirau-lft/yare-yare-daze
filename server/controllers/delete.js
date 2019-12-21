@@ -5,7 +5,7 @@ const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { ClientErrors, errorResponse } = require('../utils/errors.js');
+const { clientErrors, errorResponse } = require('../utils/errors.js');
 const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../constants/middleware.js');
 
@@ -28,7 +28,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 		const { _id } = req.params;
 
 		if (!ObjectId.isValid(_id)) {
-			throw new Error(ClientErrors.INVALID_ID);
+			throw new Error(clientErrors.INVALID_ID);
 		}
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);

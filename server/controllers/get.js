@@ -4,7 +4,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { ClientErrors, errorResponse } = require('../utils/errors.js');
+const { clientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../constants/middleware.js');
@@ -35,23 +35,23 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 		const { _id } = req.params;
 
 		if (!ObjectId.isValid(_id)) {
-			throw new Error(ClientErrors.INVALID_ID);
+			throw new Error(clientErrors.INVALID_ID);
 		}
 
 		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOne({ _id });
 
 		if (!document) {
-			return errorResponse(res, 404, 'Not Found');
+			return next(new Error('Not Found'));
 		}
 
 		return res.status(200).send(document);
 	} catch (e) {
-		return errorResponse(res, 400, e.message);
+		return next(err);
 	}
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res, next) => {
 	try {
 		const filter = parseFilter(req.query.filter);
 		const sort = parseSort(req.query.sort);
@@ -79,8 +79,8 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 			);
 
 		return res.send(response);
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
