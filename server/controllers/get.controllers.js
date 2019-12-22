@@ -46,7 +46,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 		}
 
 		return res.status(200).send(document);
-	} catch (e) {
+	} catch (err) {
 		return next(err);
 	}
 });

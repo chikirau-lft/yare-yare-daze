@@ -10,12 +10,12 @@ const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middlewares/auth.middlewares');
 
 const router = express.Router();
-router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, async (req, res) => {
+router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, async (req, res, next) => {
 	try {
 		await req.user.removeToken(req.token);
 		return res.status(200).send();
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
@@ -35,17 +35,17 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
 		if (!document) {
-			return errorResponse(res, 404, 'Not Found');
+			return next(new Error('Not Found'));
 		}
  
 		return res.status(200).send(document);
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
 // Bulk DELETE
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res) => {
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res, next) => {
 	try {
 		const filter = req.query.filter !== undefined 
 			? JSON.parse(_.replace(req.query.filter, new RegExp('\'','g'), '"')) : '';
@@ -60,7 +60,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler,
 			matched: 0
 		});
 	} catch (e) {
-		return errorResponse(res, 400, e.message);
+		return next(err);
 	}
 });
 

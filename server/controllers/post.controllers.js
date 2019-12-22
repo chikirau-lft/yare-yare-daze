@@ -5,42 +5,44 @@ const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { UserSchema } = require('./../models/users.js');
+const { UserSchema } = require('../models/users.js');
 const { getCollection } = require('../db/mongoose.js');
-const { errorResponse } = require('./../utils/errors.js');
 const { authHandler } = require('../middlewares/auth.middlewares');
 
 const router = express.Router();
-router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res) => {
+router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res, next) => {
 	try {
 		const User = getCollection(req.params.database, 'Users', UserSchema);
 		const body = _.pick(req.body, ['email', 'username', 'password']);
 		const user = new User(body);
         
 		await user.save();
-		const token = await user.generateAuthToken();
-		return res.header('x-auth', token).status(200)
+		return res
+			.header('x-auth', await user.generateAuthToken())
+			.status(200)
 			.send(user);
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
-router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res) => {
+router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res, next) => {
 	try {
 		const User = getCollection(req.params.database, 'Users', UserSchema);  
 		const body = _.pick(req.body, ['email', 'password']);
 		const user = await User.findByCredentials(body.email, body.password);
 		const token = await user.generateAuthToken();
     
-		return res.header('x-auth', token).status(200)
+		return res
+			.header('x-auth', token)
+			.status(200)
 			.send(user);
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
-router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res) => {
+router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res, next) => {
 	try {
 		const updateDocs = req.body.filter(doc => doc._id !== undefined);
 		const insertDocs = req.body.filter(doc => doc._id === undefined);
@@ -99,8 +101,8 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 		} else {
 			return res.status(200).send(response);
 		}
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 

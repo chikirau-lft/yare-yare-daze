@@ -27,17 +27,17 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 		const document = await collection.findOneAndUpdate({ _id }, update , { new: true, useFindAndModify: false });
 
 		if (!document) {
-			return errorResponse(res, 404, 'Not Found');
+			return next(new Error('Not Found'));
 		}
 
 		return res.status(200).send(document);
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
 // Bulk PATCH
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res) => {
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res, next) => {
 	try {
 		const filter = req.query.filter !== undefined 
 			? JSON.parse(_.replace(req.query.filter, new RegExp('\'','g'), '"')) : '';
@@ -51,8 +51,8 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, 
 			modified: documents.nModified,
 			matched: documents.nModified === 0 ? documents.n : 0
 		});
-	} catch (e) {
-		return errorResponse(res, 400, e.message);
+	} catch (err) {
+		return next(err);
 	}
 });
 
