@@ -17,11 +17,11 @@ app
     .use(bodyParser.json())
     .use(cors())
     .use(methodsHandler)
-    .use(require('./server/controllers/get.js'))
-    .use(require('./server/controllers/post.js'))
-    .use(require('./server/controllers/put.js'))
-    .use(require('./server/controllers/patch.js'))
-    .use(require('./server/controllers/delete.js'))
+    .use(require('./server/controllers/get.controllers'))
+    .use(require('./server/controllers/post.controllers'))
+    .use(require('./server/controllers/put.controllers'))
+    .use(require('./server/controllers/patch.controllers'))
+    .use(require('./server/controllers/delete.controllers'))
     .use(notFoundHandler)
     .use(clientErrorHandler);
 
