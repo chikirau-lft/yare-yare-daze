@@ -7,7 +7,7 @@ const { CommonSchema } = require('../models/common.js');
 const { clientErrors } = require('../utils/errors.js');
 const { generateProperties } = require('../utils/property.js');
 const { getCollection } = require('../db/mongoose.js');
-const { authHandler } = require('../constants/middleware.js');
+const { authHandler } = require('../middlewares/auth.middlewares');
 const {
 	parseFilter,
 	parseSort,

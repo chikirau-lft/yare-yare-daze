@@ -7,7 +7,7 @@ const { ObjectId } = require('mongodb');
 const { CommonSchema } = require('../models/common.js');
 const { clientErrors, errorResponse } = require('../utils/errors.js');
 const { getCollection } = require('../db/mongoose.js');
-const { authHandler } = require('../constants/middleware.js');
+const { authHandler } = require('../middlewares/auth.middlewares');
 
 const router = express.Router();
 router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, async (req, res) => {

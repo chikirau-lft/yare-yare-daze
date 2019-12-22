@@ -8,35 +8,24 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const { logger } = require('./server/middleware/logs.js');
-const { find } = require('./server/utils/utils.js');
-const { middleware } = require('./server/constants/middleware.js');
-const { httpMethods } = require('./server/constants/http.js');
-const { errorResponse } = require('./server/utils/errors.js');
+const { 
+    methodsHandler,
+    clientErrorHandler,
+    notFoundHandler 
+} = require('./server/middlewares/http.middlewares');
 
 const app = express();
 app
     .use(bodyParser.json())
     .use(cors())
-    .use(async (req, res, next) => {
-        const allowedMethods = await httpMethods();
-        if (!allowedMethods.includes(req.method)) 
-            return errorResponse(res, 405, 'Method Not Allowed.');
-        next();
-    })
+    .use(methodsHandler)
     .use(require('./server/controllers/get.js'))
     .use(require('./server/controllers/post.js'))
     .use(require('./server/controllers/put.js'))
     .use(require('./server/controllers/patch.js'))
     .use(require('./server/controllers/delete.js'))
-    .use((req, res, next) => {
-        const err = new Error('Requested resourse not found.');
-        err.status = 404;
-        next(err);
-    })
-    .use(function(err, req, res, next) {
-        return errorResponse(res, 400, err.message);
-    });
+    .use(notFoundHandler)
+    .use(clientErrorHandler);
 
 
 const httpServer = http.createServer(app);
