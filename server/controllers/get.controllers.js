@@ -30,7 +30,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/users/me`, authHandler, (req, r
 	res.send(req.user);
 });
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res) => {
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res, next) => {
 	try {
 		const { _id } = req.params;
 

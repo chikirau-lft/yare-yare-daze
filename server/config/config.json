@@ -4,7 +4,7 @@
         "MONGO_DATABASE": "mongoAPI_tests",
         "APP_PREFIX": "capi",
         "METHODS": "GET, POST, PUT, PATCH, DELETE",
-        "JWT_AUTH": true,
+        "JWT_AUTH": false,
         "JWT_SECRET": "Pavel_Cravets",
         "DEFAULT_PAGESIZE": 7,
         "MAX_PAGESIZE": 8,

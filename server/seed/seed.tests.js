@@ -118,16 +118,18 @@ const users =[{
 	}]
 }];
 
-const populateItems = async (colName, schema, data) => {
+const populateItems = async (done, colName, schema, data) => {
 	const col = getCollection(process.env.MONGO_DATABASE, colName, schema);
 	await col.deleteMany({});
 	await col.insertMany(data);
+	done();
 };
 
-const populateUsers = async (colName, schema, data) => {
+const populateUsers = async (done, colName, schema, data) => {
 	const User = getCollection(process.env.MONGO_DATABASE, colName, schema);
 	await User.deleteMany({});
 	await Promise.all(data.map(user => new User(user).save()));
+	done();
 };
 
 module.exports = {
