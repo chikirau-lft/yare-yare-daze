@@ -2,8 +2,6 @@
 
 require('./server/config/config.js');
 
-const http = require('http');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -27,10 +25,8 @@ app
     .use(notFoundHandler)
     .use(clientErrorHandler);
 
-
-const httpServer = http.createServer(app);
 const port = process.env.PORT || 5000;
-httpServer.listen(port, async () => {
+app.listen(port, async () => {
     const message = `Server is up. HTTP connections is listened on port ${port}\n`;
     console.log(message);
 });
