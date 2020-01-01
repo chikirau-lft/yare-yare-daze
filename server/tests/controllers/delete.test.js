@@ -4,7 +4,7 @@ const expect = require('expect');
 const request = require('supertest');
 const { ObjectID } = require('mongodb');
 
-const { app } = require('../../../index');
+const { app } = require('../../app');
 const { CommonSchema } = require('../../models/common.models');
 const { UserSchema } = require('../../models/users.models');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests');

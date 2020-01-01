@@ -5,7 +5,7 @@ const request = require('supertest');
 const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
-const { app } = require('../../../index');
+const { app } = require('../../app');
 const { CommonSchema } = require('../../models/common.models.js');
 const { UserSchema } = require('../../models/users.models.js');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
