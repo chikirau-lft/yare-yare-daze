@@ -1,6 +1,7 @@
 'use strict';
 
 const { httpMethods } = require('../constants/http.constants');
+const { errorResponse } = require('../utils/errors');
 
 const methodsHandler = (req, res, next) => {
     const allowedMethods = httpMethods();
@@ -19,7 +20,13 @@ const notFoundHandler = (req, res, next) => {
     return next(err);
 };
 
-const clientErrorHandler = (err, req, res, next) => errorResponse(res, 400, err.message);
+const clientErrorHandler = (err, req, res, next) => {
+    return errorResponse(
+        res, 
+        err.status || 400, 
+        err.message || err.message
+    );
+};
 
 module.exports = {
     methodsHandler,

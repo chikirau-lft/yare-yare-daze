@@ -13,8 +13,8 @@ const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
-    
+describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
+    this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
@@ -146,8 +146,8 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, () => {
 	});
 });
 
-describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
-    
+describe(`POST /${process.env.APP_PREFIX}/:database/users`, function () {
+    this.timeout(10000);
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {
@@ -206,8 +206,8 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, () => {
 	});
 });
 
-describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/login`, () => {
-
+describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/login`, function () {
+	this.timeout(10000);
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {

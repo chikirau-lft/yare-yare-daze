@@ -13,8 +13,8 @@ const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
-
+describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function () {
+	this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
     
@@ -60,8 +60,8 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 	});
 });
 
-describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, () => {
-
+describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, function () {
+	this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
@@ -105,8 +105,8 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, (
 	});
 });
 
-describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, () => {
-	
+describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
+	this.timeout(10000);
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {

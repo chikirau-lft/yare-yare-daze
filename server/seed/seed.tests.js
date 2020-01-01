@@ -9,7 +9,7 @@ const items = [{
 	_id: new ObjectID(),
 	ID: '4B4C45222321524536344B37575645415F3A3248492A',
 	TS: 1493647468918,
-	array: [ 1, 2, 3, 4, 5 ],
+	array: [ 1, 2, 3, 4, 5, 6, 7, 8 ],
 	obj: {
 		a: 10,
 		b: 20
@@ -118,18 +118,16 @@ const users =[{
 	}]
 }];
 
-const populateItems = async (done, colName, schema, data) => {
+const populateItems = async (colName, schema, data) => {
 	const col = getCollection(process.env.MONGO_DATABASE, colName, schema);
 	await col.deleteMany({});
 	await col.insertMany(data);
-	done();
 };
 
-const populateUsers = async (done, colName, schema, data) => {
+const populateUsers = async (colName, schema, data) => {
 	const User = getCollection(process.env.MONGO_DATABASE, colName, schema);
 	await User.deleteMany({});
 	await Promise.all(data.map(user => new User(user).save()));
-	done();
 };
 
 module.exports = {

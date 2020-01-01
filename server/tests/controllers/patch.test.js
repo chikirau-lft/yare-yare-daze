@@ -13,8 +13,8 @@ const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
-
+describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function () {
+	this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
     
@@ -81,8 +81,8 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, () => {
 	});
 });
 
-describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, () => {
-    
+describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, function () {
+    this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 

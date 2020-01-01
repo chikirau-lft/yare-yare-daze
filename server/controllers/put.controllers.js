@@ -18,11 +18,11 @@ router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 			{ ...req.body } , { upsert: true, useFindAndModify: false, new: true });
 
 		if (!document) {
-			return next(new Error('Not Found'));
+			return next();
 		}
 
 		return res.status(200).send(document);
-	} catch (e) {
+	} catch (err) {
 		return next(err);
 	}
 });

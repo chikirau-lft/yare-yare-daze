@@ -12,8 +12,8 @@ const { curry } = require('./../../utils/utils.js');
 
 const testCollection = 'Qlik_MSDashboard_test';
 
-describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, () => {
-    
+describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
+    this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
     

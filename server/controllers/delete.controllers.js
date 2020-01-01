@@ -35,7 +35,9 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
 		if (!document) {
-			return next(new Error('Not Found'));
+			const err = new Error('Not Found');
+			err.status = 404;
+			return next(err);
 		}
  
 		return res.status(200).send(document);
@@ -59,7 +61,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler,
 			modified: 0,
 			matched: 0
 		});
-	} catch (e) {
+	} catch (err) {
 		return next(err);
 	}
 });

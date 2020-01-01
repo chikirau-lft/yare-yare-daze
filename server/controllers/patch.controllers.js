@@ -27,7 +27,9 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 		const document = await collection.findOneAndUpdate({ _id }, update , { new: true, useFindAndModify: false });
 
 		if (!document) {
-			return next(new Error('Not Found'));
+			const err = new Error('Not Found');
+			err.status = 404;
+			return next(err);
 		}
 
 		return res.status(200).send(document);

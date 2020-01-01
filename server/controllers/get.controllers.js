@@ -42,7 +42,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 		const document = await collection.findOne({ _id });
 
 		if (!document) {
-			return next(new Error('Not Found'));
+			return next();
 		}
 
 		return res.status(200).send(document);
