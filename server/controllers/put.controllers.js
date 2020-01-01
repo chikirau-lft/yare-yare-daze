@@ -5,7 +5,6 @@ const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
 const { getCollection } = require('../db/mongoose.js');
-const { errorResponse } = require('../utils/errors.js');
 const { authHandler } = require('../middlewares/auth.middlewares');
 
 const router = express.Router();

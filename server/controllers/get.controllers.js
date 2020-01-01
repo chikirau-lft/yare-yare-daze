@@ -3,11 +3,11 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 
-const { CommonSchema } = require('../models/common.js');
-const { clientErrors } = require('../utils/errors.js');
-const { generateProperties } = require('../utils/property.js');
-const { getCollection } = require('../db/mongoose.js');
+const { CommonSchema } = require('../models/common');
+const { generateProperties } = require('../utils/property');
+const { getCollection } = require('../db/mongoose');
 const { authHandler } = require('../middlewares/auth.middlewares');
+const { clientErrors, notFoundError } = require('../constants/errors.constants');
 const {
 	parseFilter,
 	parseSort,
@@ -42,7 +42,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 		const document = await collection.findOne({ _id });
 
 		if (!document) {
-			return next();
+			return next(notFoundError());
 		}
 
 		return res.status(200).send(document);

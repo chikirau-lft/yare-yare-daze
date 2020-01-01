@@ -2,6 +2,7 @@
 
 const { httpMethods } = require('../constants/http.constants');
 const { errorResponse } = require('../utils/errors');
+const { notFoundError } = require('../constants/errors.constants');
 
 const methodsHandler = (req, res, next) => {
     const allowedMethods = httpMethods();
@@ -15,9 +16,7 @@ const methodsHandler = (req, res, next) => {
 };
 
 const notFoundHandler = (req, res, next) => {
-    const err = new Error('Requested resourse not found.');
-    err.status = 404;
-    return next(err);
+    return next(notFoundError());
 };
 
 const clientErrorHandler = (err, req, res, next) => {

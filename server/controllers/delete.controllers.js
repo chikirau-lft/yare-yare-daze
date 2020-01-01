@@ -5,7 +5,7 @@ const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.js');
-const { clientErrors, errorResponse } = require('../utils/errors.js');
+const { clientErrors, notFoundError } = require('../constants/errors.constants');
 const { getCollection } = require('../db/mongoose.js');
 const { authHandler } = require('../middlewares/auth.middlewares');
 
@@ -35,9 +35,7 @@ router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandl
 		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
 
 		if (!document) {
-			const err = new Error('Not Found');
-			err.status = 404;
-			return next(err);
+			return next(notFoundError());
 		}
  
 		return res.status(200).send(document);
