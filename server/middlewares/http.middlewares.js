@@ -1,7 +1,7 @@
 'use strict';
 
 const { httpMethods } = require('../constants/http.constants');
-const { errorResponse } = require('../utils/errors');
+const { errorResponse } = require('../utils/http.utils');
 const { notFoundError, notAllowedError } = require('../constants/errors.constants');
 
 const methodsHandler = (req, res, next) => {

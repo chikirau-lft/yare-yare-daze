@@ -1,7 +1,7 @@
 'use strict';
 
-const { ClientErrors } = require('./errors.js');
-const { arrayToObject, stringToObject } = require('./utils.js');
+const { ClientErrors } = require('./http.utils.js');
+const { arrayToObject, stringToObject } = require('./core.utils.js');
 
 const parseFilter = filter => {
 	return stringToObject(filter !== undefined ? filter : process.env.DEFAULT_FILTER);

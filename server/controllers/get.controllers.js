@@ -4,7 +4,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
-const { generateProperties } = require('../utils/property');
+const { generateProperties } = require('../utils/response.utils');
 const { getCollection } = require('../db/mongoose.db');
 const { authHandler } = require('../middlewares/auth.middlewares');
 const { clientErrors, notFoundError } = require('../constants/errors.constants');
@@ -16,7 +16,7 @@ const {
 	parseCount,
 	parseKeys,
 	parseHint
-} = require('../utils/parsers.js');
+} = require('../utils/parsers.utils.js');
 
 const router = express.Router();
 router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
