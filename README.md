@@ -13,15 +13,15 @@ The app will automatically reload if you change any of the source files.
 
 Run `npm run test` to execute the unit tests via [Supertest](https://github.com/visionmedia/supertest).
 
-## HTTP API
+## Select documents
 | Param         | Description                                                 | Query example                                                  |
 | ------------- | ----------------------------------------------------------- | -------------------------------------------------------------- |
-| filter        | Allows you to specify conditions on the documents           | `/app/database1/colleaction1?filter={"qty":{"$gt":50}}`        |
-| page          | Allows you to select which page should be returned          | `/app/database1/colleaction1?page=2`                           |
-| pagesize      | Allows you to control the number of documents to return     | `/app/database1/colleaction1?pagesize=20`                      |
-| sort          | Allows you to specify sort condition                        | `/app/database1/colleaction1?sort={"field": 1}`                |
-| keys          | Allows you to specify the inclusion/exclusion of fields     | `/app/database1/colleaction1?keys={'item':1}&keys={'status':1}`|
-| hint          | Allows you to override MongoDB’s query optimization process | `/app/database1/colleaction1?hint={'item':1}`                  |
+| filter        | Allows you to specify conditions on the documents           | GET `/app/database1/colleaction1?filter={"qty":{"$gt":50}}` HTTP/1.1 |
+| page          | Allows you to select which page should be returned          | GET `/app/database1/colleaction1?page=2` HTTP/1.1 |
+| pagesize      | Allows you to control the number of documents to return     | GET `/app/database1/colleaction1?pagesize=20` HTTP/1.1 |
+| sort          | Allows you to specify sort condition                        | GET `/app/database1/colleaction1?sort={"field": 1}` HTTP/1.1 |
+| keys          | Allows you to specify the inclusion/exclusion of fields     | GET `/app/database1/colleaction1?keys={'item':1}&keys={'status':1}`HTTP/1.1 |
+| hint          | Allows you to override MongoDB’s query optimization process | GET `/app/database1/colleaction1?hint={'item':1}` HTTP/1.1 |
 
 ## Environment variables
 
