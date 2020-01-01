@@ -1,6 +1,6 @@
 'use strict';
 
-const { UserSchema } = require('../models/users');
+const { UserSchema } = require('../models/users.models');
 const { getCollection } = require('../db/mongoose.db');
 const { errorResponse } = require('../utils/errors');
 const { defaultHandler } = require('./core.middlewares');

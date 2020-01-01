@@ -4,7 +4,7 @@ const express = require('express');
 const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
-const { CommonSchema } = require('../models/common');
+const { CommonSchema } = require('../models/common.models');
 const { clientErrors, notFoundError } = require('../constants/errors.constants');
 const { getCollection } = require('../db/mongoose.db');
 const { authHandler } = require('../middlewares/auth.middlewares');

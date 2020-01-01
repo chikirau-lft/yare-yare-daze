@@ -6,8 +6,8 @@ const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 const { app } = require('../../../app.js');
-const { CommonSchema } = require('../../models/common.js');
-const { UserSchema } = require('./../../models/users.js');
+const { CommonSchema } = require('../../models/common.models.js');
+const { UserSchema } = require('../../models/users.models.js');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
 const { curry } = require('./../../utils/utils.js');
 

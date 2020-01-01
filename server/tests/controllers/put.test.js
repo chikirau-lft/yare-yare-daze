@@ -4,8 +4,8 @@ const expect = require('expect');
 const request = require('supertest');
 
 const { app } = require('../../../app');
-const { CommonSchema } = require('../../models/common');
-const { UserSchema } = require('./../../models/users');
+const { CommonSchema } = require('../../models/common.models');
+const { UserSchema } = require('./../../models/users.models');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests');
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('./../../utils/utils');

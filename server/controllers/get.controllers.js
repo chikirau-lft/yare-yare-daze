@@ -3,7 +3,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 
-const { CommonSchema } = require('../models/common');
+const { CommonSchema } = require('../models/common.models');
 const { generateProperties } = require('../utils/property');
 const { getCollection } = require('../db/mongoose.db');
 const { authHandler } = require('../middlewares/auth.middlewares');

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
-const { ClientErrors } = require('./../utils/errors.js');
+const { clientErrors } = require('../constants/errors.constants');
 
 const UserSchema = new mongoose.Schema({
 	email: {
@@ -79,7 +79,7 @@ UserSchema.statics.findByToken = function (token) {
 	try {
 		decoded = jwt.verify(token, process.env.JWT_SECRET);
 	} catch (e) {
-		return Promise.reject(ClientErrors.INVALID_JWT);
+		return Promise.reject(clientErrors.INVALID_JWT);
 	}
 
 	return user.findOne({
@@ -94,13 +94,13 @@ UserSchema.statics.findByCredentials = function (email, password) {
 
 	return user.findOne({ email }).then(user => {
 		if (!user) {
-			return Promise.reject(ClientErrors.INVALID_CREDENTIALS);
+			return Promise.reject(clientErrors.INVALID_CREDENTIALS);
 		}
 
 		return new Promise((resolve, reject) => {
 			bcrypt.compare(password, user.password, (err, res) => {
 				if (err || !res) { 
-					reject(ClientErrors.INVALID_CREDENTIALS);
+					reject(clientErrors.INVALID_CREDENTIALS);
 				}
 				resolve(user);
 			});
