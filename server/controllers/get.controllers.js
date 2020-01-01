@@ -5,7 +5,7 @@ const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common');
 const { generateProperties } = require('../utils/property');
-const { getCollection } = require('../db/mongoose');
+const { getCollection } = require('../db/mongoose.db');
 const { authHandler } = require('../middlewares/auth.middlewares');
 const { clientErrors, notFoundError } = require('../constants/errors.constants');
 const {

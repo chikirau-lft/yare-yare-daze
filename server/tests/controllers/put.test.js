@@ -3,12 +3,12 @@
 const expect = require('expect');
 const request = require('supertest');
 
-const { app } = require('../../../app.js');
-const { CommonSchema } = require('../../models/common.js');
-const { UserSchema } = require('./../../models/users.js');
-const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
-const { getCollection } = require('../../db/mongoose.js');
-const { curry } = require('./../../utils/utils.js');
+const { app } = require('../../../app');
+const { CommonSchema } = require('../../models/common');
+const { UserSchema } = require('./../../models/users');
+const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests');
+const { getCollection } = require('../../db/mongoose.db');
+const { curry } = require('./../../utils/utils');
 
 const testCollection = 'Qlik_MSDashboard_test';
 

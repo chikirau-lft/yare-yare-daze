@@ -4,9 +4,9 @@ const express = require('express');
 const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
-const { CommonSchema } = require('../models/common.js');
-const { UserSchema } = require('../models/users.js');
-const { getCollection } = require('../db/mongoose.js');
+const { CommonSchema } = require('../models/common');
+const { UserSchema } = require('../models/users');
+const { getCollection } = require('../db/mongoose.db');
 const { authHandler } = require('../middlewares/auth.middlewares');
 
 const router = express.Router();

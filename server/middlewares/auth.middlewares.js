@@ -1,8 +1,8 @@
 'use strict';
 
-const { UserSchema } = require('../models/users.js');
-const { getCollection } = require('../db/mongoose.js');
-const { errorResponse } = require('../utils/errors.js');
+const { UserSchema } = require('../models/users');
+const { getCollection } = require('../db/mongoose.db');
+const { errorResponse } = require('../utils/errors');
 const { defaultHandler } = require('./core.middlewares');
 
 const jwtHandler = async (req, res, next) => {

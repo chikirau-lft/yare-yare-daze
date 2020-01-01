@@ -3,8 +3,8 @@
 const express = require('express');
 const { ObjectID } = require('mongodb');
 
-const { CommonSchema } = require('../models/common.js');
-const { getCollection } = require('../db/mongoose.js');
+const { CommonSchema } = require('../models/common');
+const { getCollection } = require('../db/mongoose.db');
 const { authHandler } = require('../middlewares/auth.middlewares');
 
 const router = express.Router();
