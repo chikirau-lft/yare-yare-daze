@@ -16,7 +16,7 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
 ## HTTP API
 1. Read API:
     | Param         | Description                                                 | Query example                                                  |
-    | ------------- |-------------------------------------------------------------| ---------------------------------------------------------------|
+    | ------------- | ----------------------------------------------------------- | -------------------------------------------------------------- |
     | filter        | Allows you to specify conditions on the documents           | `/app/database1/colleaction1?filter={"qty":{"$gt":50}}`        |
     | page          | Allows you to select which page should be returned          | `/app/database1/colleaction1?page=2`                           |
     | pagesize      | Allows you to control the number of documents to return     | `/app/database1/colleaction1?pagesize=20`                      |
