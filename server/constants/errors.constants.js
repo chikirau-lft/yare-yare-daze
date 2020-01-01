@@ -6,21 +6,26 @@ const clientErrors = Object.freeze({
 	INVALID_PAGE: 'Provided page param should be a number gte than 0.',
 	INVALID_CREDENTIALS: 'Provided credentials are not valid.',
     INVALID_JWT: 'Provided jwt token is not valid or have already expired.',
-    RESOURSE_NOT_FOUND: 'Requested resourse not found.'
+    RESOURSE_NOT_FOUND: 'Requested resourse not found.',
+    METHOD_NOT_ALLOWED: 'Method Not Allowed.'
 });
 
 const serverErrors = Object.freeze({
-	INTERNAL_ERROR: 'Internal Server Error'
+	INTERNAL_ERROR: 'Internal Server Error.'
 });
 
-const notFoundError = () => {
-    const error = new Error(clientErrors.RESOURSE_NOT_FOUND);
-    error.status = 404;
-    return error;
-};
+const error = (status, message) => {
+    const err = new Error(message);
+    err.status = status;
+    return err;
+}
+
+const notFoundError = () => error(404, clientErrors.RESOURSE_NOT_FOUND);
+const notAllowedError = () => error(405, clientErrors.METHOD_NOT_ALLOWED);
 
 module.exports = {
-    clientErrors,
+    clientErrors, 
     serverErrors,
-	notFoundError
+    notFoundError,
+    notAllowedError
 }; 

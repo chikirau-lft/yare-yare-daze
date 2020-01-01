@@ -2,14 +2,12 @@
 
 const { httpMethods } = require('../constants/http.constants');
 const { errorResponse } = require('../utils/errors');
-const { notFoundError } = require('../constants/errors.constants');
+const { notFoundError, notAllowedError } = require('../constants/errors.constants');
 
 const methodsHandler = (req, res, next) => {
     const allowedMethods = httpMethods();
     if (!allowedMethods.includes(req.method)) {
-        const err = new Error('Method Not Allowed.');
-        err.status = 405;
-        return next(err);
+        return next(notAllowedError());
     }
 
     return next();
