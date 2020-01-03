@@ -13,15 +13,44 @@ The app will automatically reload if you change any of the source files.
 
 Run `npm run test` to execute the unit tests via [Supertest](https://github.com/visionmedia/supertest).
 
-## Select documents
-| Param         | Description                                                 | Query example                                                  |
-| ------------- | ----------------------------------------------------------- | -------------------------------------------------------------- |
-| filter        | Allows you to specify conditions on the documents           | GET `/app/database1/colleaction1?filter={"qty":{"$gt":50}}` HTTP/1.1 |
-| page          | Allows you to select which page should be returned          | GET `/app/database1/colleaction1?page=2` HTTP/1.1 |
-| pagesize      | Allows you to control the number of documents to return     | GET `/app/database1/colleaction1?pagesize=20` HTTP/1.1 |
-| sort          | Allows you to specify sort condition                        | GET `/app/database1/colleaction1?sort={"field": 1}` HTTP/1.1 |
-| keys          | Allows you to specify the inclusion/exclusion of fields     | GET `/app/database1/colleaction1?keys={'item':1}&keys={'status':1}`HTTP/1.1 |
-| hint          | Allows you to override MongoDB’s query optimization process | GET `/app/database1/colleaction1?hint={'item':1}` HTTP/1.1 |
+## CRUD Actions
+
+1. **HTTP GET**. Read data from db using following query params:
+   - *filter* - GET `/app/db/col?filter={"qty":{"$gt":50}}`. Allows to specify conditions on the documents. 
+   - *page* - GET `/app/db/col?page=2`. Allows you to select which page should be returned. 
+   - *pagesize* - GET `/app/db/col?pagesize=20`. Allows you to control the number of documents to return.
+   - *sort* - GET `/app/db/col?sort={"field": 1}`. Allows you to specify sort condition. 
+   - *keys* - GET `/app/db/col?keys={'item':1}&keys={'status':1}`. Allows you to specify the inclusion/exclusion of fields. 
+   - *hint* - GET `/app/db/col?hint={'item':1}`. Allows you to override MongoDB’s query optimization process. 
+
+2. **HTTP POST**. Insert multiple documents. Specifying `_id` field will perform update action:
+		
+        ```
+        POST /app/db/col
+        
+		[
+        	{
+				text: 'text 1',
+				number: 2000
+			}, {
+				text: 'text 2',
+				number: 3000
+			}
+        ]
+        ```
+
+3. **HTTP DELETE**. Delete data from database:
+	- delete by id:
+		        
+       	```
+        DELETE /app/db/col/5e0f8e63e2f946d8b942ae12 - will delete document with id of 5e0f8e63e2f946d8b942ae12
+        ```
+    - delete using query filter param:
+    	
+        ```
+        DELETE /app/db/col?filter={'number': 200} - will delete all documents with `number` field of value 200
+        ```
+
 
 ## Environment variables
 
