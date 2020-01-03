@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const { log } = require('./utils/logger.utils');
+const { logger } = require('./middlewares/logger.middlewares');
 const { 
 	methodsHandler,
 	clientErrorHandler,
@@ -19,7 +20,8 @@ app
 	.use(bodyParser.json())
 	.use(cors())
 	.use(helmet())
-	.use(methodsHandler)
+    .use(methodsHandler)
+    .use(logger)
 	.use(require('./controllers/get.controllers'))
 	.use(require('./controllers/post.controllers'))
 	.use(require('./controllers/put.controllers'))
