@@ -5,6 +5,7 @@ require('./config/config.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet')
 
 const { 
     methodsHandler,
@@ -16,6 +17,7 @@ const app = express();
 app
     .use(bodyParser.json())
     .use(cors())
+    .use(helmet())
     .use(methodsHandler)
     .use(require('./controllers/get.controllers'))
     .use(require('./controllers/post.controllers'))
