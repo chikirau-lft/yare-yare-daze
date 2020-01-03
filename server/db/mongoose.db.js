@@ -7,6 +7,8 @@ const { internalError } = require('../constants/errors.constants');
 mongoose.Promise = global.Promise;
 mongoose.pluralize(null);
 mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.set('useNewUrlParser', true);
 
 const connections = {};
 
@@ -14,7 +16,7 @@ const getDatabaseConnection = async dbName => {
 	if (connections[dbName]) {
 		return connections[dbName];
 	}
-	connections[dbName] = await mongoose.createConnection(`${process.env.MONGO_URI}/${dbName}`, { useNewUrlParser: true });
+	connections[dbName] = await mongoose.createConnection(`${process.env.MONGO_URI}/${dbName}`);
 
 	return connections[dbName];
 };
