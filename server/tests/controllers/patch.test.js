@@ -82,7 +82,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 });
 
 describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, function () {
-    this.timeout(10000);
+	this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
@@ -107,7 +107,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, 
 					return done(err);
 				}
                
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({ TS: items[0] });
 
 				documents

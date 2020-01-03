@@ -12,7 +12,7 @@ router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 	try {
 		const _id = req.body._id ? req.body._id : new ObjectID(); 
 
-		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
+		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOneAndUpdate({ _id }, 
 			{ ...req.body } , { upsert: true, useFindAndModify: false, new: true });
 

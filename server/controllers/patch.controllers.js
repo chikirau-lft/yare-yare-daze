@@ -23,7 +23,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 			throw new Error(clientErrors.INVALID_ID);
 		}
 
-		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
+		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOneAndUpdate({ _id }, update , { new: true, useFindAndModify: false });
 
 		if (!document) {
@@ -42,7 +42,7 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, 
 		const filter = req.query.filter !== undefined 
 			? JSON.parse(_.replace(req.query.filter, new RegExp('\'','g'), '"')) : '';
 
-		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
+		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const documents = await collection.updateMany(filter, req.body, { useFindAndModify: false });
 
 		return res.status(200).send({

@@ -1,7 +1,7 @@
 'use strict';
 
-const defaultHandler = async (req, res, next) => next();
+const defaultHandler = (req, res, next) => next();
 
 module.exports = {
-    defaultHandler
+	defaultHandler
 };

@@ -35,7 +35,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const document = await collection.findById(items[0]._id);
             
 				expect(document).toBeNull();
@@ -83,7 +83,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, f
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({ TS: items[0] });
 
 				expect(documents).toEqual([]);
@@ -119,12 +119,12 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
 			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/token`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
-			.end((err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}
 
-				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);
+				const User = await getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);
 
 				User.findById(users[0]._id).then(user => {
 					expect(user.tokens.length).toBe(0);

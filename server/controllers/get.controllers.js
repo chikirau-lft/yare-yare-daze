@@ -38,7 +38,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 			throw new Error(clientErrors.INVALID_ID);
 		}
 
-		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
+		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const document = await collection.findOne({ _id });
 
 		if (!document) {
@@ -61,7 +61,7 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 		const keys = parseKeys(req.query.keys);
 		const hint = parseHint(req.query.hint);
 
-		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
+		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const documents = await collection.find(filter)
 			.skip(page * pagesize - pagesize)
 			.select(keys)

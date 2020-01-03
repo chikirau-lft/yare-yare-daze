@@ -7,7 +7,7 @@ const { defaultHandler } = require('./core.middlewares');
 
 const jwtHandler = async (req, res, next) => {
 	try {
-		const User = getCollection(req.params.database, 'Users', UserSchema);
+		const User = await getCollection(req.params.database, 'Users', UserSchema);
 
 		const token = req.header('x-auth');
 		const user = await User.findByToken(token);

@@ -13,7 +13,7 @@ const { curry } = require('../../utils/core.utils');
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
-    this.timeout(10000);
+	this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
     
@@ -37,7 +37,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({});
 				const updated = await collection.findOne({ _id: items[0]._id });
 				updated._doc._id = updated._doc._id.toHexString();
@@ -68,7 +68,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({});
 				const inserted = await collection.findOne(res.body);
 

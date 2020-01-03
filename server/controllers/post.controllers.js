@@ -12,7 +12,7 @@ const { authHandler } = require('../middlewares/auth.middlewares');
 const router = express.Router();
 router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res, next) => {
 	try {
-		const User = getCollection(req.params.database, 'Users', UserSchema);
+		const User = await getCollection(req.params.database, 'Users', UserSchema);
 		const body = _.pick(req.body, ['email', 'username', 'password']);
 		const user = new User(body);
         
@@ -28,7 +28,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res, next)
 
 router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res, next) => {
 	try {
-		const User = getCollection(req.params.database, 'Users', UserSchema);  
+		const User = await getCollection(req.params.database, 'Users', UserSchema);  
 		const body = _.pick(req.body, ['email', 'password']);
 		const user = await User.findByCredentials(body.email, body.password);
 		const token = await user.generateAuthToken();
@@ -47,7 +47,7 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 		const updateDocs = req.body.filter(doc => doc._id !== undefined);
 		const insertDocs = req.body.filter(doc => doc._id === undefined);
 
-		const collection = getCollection(req.params.database, req.params.collection, CommonSchema);
+		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const insertedDocs = await collection.insertMany(insertDocs);
 
 		let bulk = collection.collection.initializeOrderedBulkOp();

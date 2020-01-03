@@ -14,7 +14,7 @@ const { curry } = require('../../utils/core.utils');
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
-    this.timeout(10000);
+	this.timeout(10000);
 	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 
@@ -45,7 +45,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({
 					_id: { $in: res.body._embedded.map(d => _.last(d.href.split('/'))) }
 				}, { _id: 0 });
@@ -90,7 +90,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 				const documents = await collection.find({
 					_id: { $in: res.body._embedded.map(d => _.last(d.href.split('/'))) }
 				});
@@ -128,7 +128,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
 
 				const count = await collection.countDocuments({});
 				const updated = await collection.find({ _id: _.last(data)._id.toHexString() });
@@ -147,7 +147,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 });
 
 describe(`POST /${process.env.APP_PREFIX}/:database/users`, function () {
-    this.timeout(10000);
+	this.timeout(10000);
 	beforeEach(curry(populateUsers)('Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {
@@ -168,12 +168,12 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, function () {
 				expect(res.body._id).toBeTruthy();
 				expect(res.body.email).toBe(email);
 			})
-			.end((err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}
 
-				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
+				const User = await getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
 
 				User.findOne({ email }).then(user => {
 					expect(user).toBeTruthy();
@@ -223,12 +223,12 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 			.expect(res => {
 				expect(res.headers['x-auth']).toBeTruthy();
 			})
-			.end((err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}
                 
-				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
+				const User = await getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
 
 				User.findById(users[1]._id).then(user => {
 					expect(user.tokens[1]).toMatchObject({
@@ -249,12 +249,12 @@ describe(`POST /${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/lo
 			.expect(res => {
 				expect(res.headers['x-auth']).toBeFalsy();
 			})
-			.end((err, res) => {
+			.end(async (err, res) => {
 				if (err) {
 					return done(err);
 				}
 
-				const User = getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
+				const User = await getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);     
 
 				User.findById(users[1]._id).then(user => {
 					expect(user.tokens.length).toBe(1);

@@ -17,5 +17,5 @@ const generateProperties = (_embedded, _id, _size, pagesize, count) => {
 };
 
 module.exports = {
-    generateProperties
+	generateProperties
 };
