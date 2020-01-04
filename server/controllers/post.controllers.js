@@ -1,16 +1,13 @@
 'use strict';
 
-const express = require('express');
 const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
 const { UserSchema } = require('../models/users.models');
 const { getCollection } = require('../db/mongoose.db');
-const { authHandler } = require('../middlewares/auth.middlewares');
 
-const router = express.Router();
-router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res, next) => {
+const add_user = async (req, res, next) => {
 	try {
 		const User = await getCollection(req.params.database, 'Users', UserSchema);
 		const body = _.pick(req.body, ['email', 'username', 'password']);
@@ -24,9 +21,9 @@ router.post(`/${process.env.APP_PREFIX}/:database/users`, async (req, res, next)
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res, next) => {
+const authenticate_user = async (req, res, next) => {
 	try {
 		const User = await getCollection(req.params.database, 'Users', UserSchema);  
 		const body = _.pick(req.body, ['email', 'password']);
@@ -40,9 +37,9 @@ router.post(`/${process.env.APP_PREFIX}/:database/users/login`, async (req, res,
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res, next) => {
+const add_documents = async (req, res, next) => {
 	try {
 		const updateDocs = req.body.filter(doc => doc._id !== undefined);
 		const insertDocs = req.body.filter(doc => doc._id === undefined);
@@ -104,6 +101,10 @@ router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asy
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-module.exports = router;
+module.exports = {
+	add_user,
+	authenticate_user,
+	add_documents
+};

@@ -1,16 +1,13 @@
-'use strict';  
+'use strict';
 
-const express = require('express');
 const _ = require('lodash');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
 const { clientErrors, notFoundError } = require('../constants/errors.constants');
 const { getCollection } = require('../db/mongoose.db');
-const { authHandler } = require('../middlewares/auth.middlewares');
 
-const router = express.Router();
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res, next) => {
+const update_document = async (req, res, next) => {
 	if (req.params._id === '*') {
 		return next('route');
 	}
@@ -34,10 +31,9 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandle
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-// Bulk PATCH
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, async (req, res, next) => {
+const update_documents = async (req, res, next) => {
 	try {
 		const filter = req.query.filter !== undefined 
 			? JSON.parse(_.replace(req.query.filter, new RegExp('\'','g'), '"')) : '';
@@ -54,6 +50,9 @@ router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, 
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-module.exports = router;
+module.exports = {
+	update_document,
+	update_documents
+};

@@ -1,14 +1,11 @@
 'use strict';
 
-const express = require('express');
 const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
 const { getCollection } = require('../db/mongoose.db');
-const { authHandler } = require('../middlewares/auth.middlewares');
 
-const router = express.Router();
-router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res, next) => {
+const update_documents = async (req, res, next) => {
 	try {
 		const _id = req.body._id ? req.body._id : new ObjectID(); 
 
@@ -24,6 +21,8 @@ router.put(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-module.exports = router;
+module.exports = {
+	update_documents
+};

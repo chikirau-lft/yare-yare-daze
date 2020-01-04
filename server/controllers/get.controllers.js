@@ -1,12 +1,10 @@
 'use strict';
 
-const express = require('express');
 const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
 const { generateProperties } = require('../utils/response.utils');
 const { getCollection } = require('../db/mongoose.db');
-const { authHandler } = require('../middlewares/auth.middlewares');
 const { clientErrors, notFoundError } = require('../constants/errors.constants');
 const {
 	parseFilter,
@@ -18,19 +16,18 @@ const {
 	parseHint
 } = require('../utils/parsers.utils.js');
 
-const router = express.Router();
-router.get(`/${process.env.APP_PREFIX}`, (req, res) => {
+const get_app = (req, res) => {
 	return res.status(200).send({
 		statusCode: 200,
 		applicationName: process.env.APP_PREFIX
 	});
-});
+};
 
-router.get(`/${process.env.APP_PREFIX}/:database/users/me`, authHandler, (req, res) => {
+const get_user = (req, res) => {
 	res.send(req.user);
-});
+};
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, async (req, res, next) => {
+const get_document = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
 
@@ -49,9 +46,9 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler,
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, async (req, res, next) => {
+const get_documents = async (req, res, next) => {
 	try {
 		const filter = parseFilter(req.query.filter);
 		const sort = parseSort(req.query.sort);
@@ -82,6 +79,11 @@ router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, asyn
 	} catch (err) {
 		return next(err);
 	}
-});
+};
 
-module.exports = router;
+module.exports = {
+	get_app,
+	get_user,
+	get_document,
+	get_documents
+};

@@ -7,7 +7,7 @@ const { log } = require('../utils/logger.utils');
 const logger = (req, res, next) => {
 	res.once('finish', async () => {
 		log.info({
-			req: req
+			req
 		});
 	});
 	next();
