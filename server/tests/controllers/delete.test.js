@@ -11,16 +11,17 @@ const { items, users, populateItems, populateUsers } = require('../../seed/seed.
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('../../utils/core.utils');
 
+const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function () {
 	this.timeout(10000);
-	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
-	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
+	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
     
 	it('should remove document from collection', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${items[0]._id}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
@@ -35,7 +36,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 					return done(err);
 				}
 
-				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const document = await collection.findById(items[0]._id);
             
 				expect(document).toBeNull();
@@ -45,7 +46,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 	it('should return 400 if _id field is invalid', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/123`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/123`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(400)
 			.end(done);
@@ -53,7 +54,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 	it('should return 404 if document with such _id does not exists', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${new ObjectID()}`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${new ObjectID()}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(404)
 			.end(done);
@@ -62,12 +63,12 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, function () {
 	this.timeout(10000);
-	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
-	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
+	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
 	it('should delete multiple documents specified by filter param', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/*?filter={"TS": ${items[0].TS}}`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/*?filter={"TS": ${items[0].TS}}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
@@ -83,7 +84,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, f
 					return done(err);
 				}
 
-				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const documents = await collection.find({ TS: items[0] });
 
 				expect(documents).toEqual([]);
@@ -93,7 +94,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, f
 
 	it('should return 400 status if invalid filter obj is spesified', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/*?filter="TS": ${items[0].TS}}`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/*?filter="TS": ${items[0].TS}}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(400)
 			.expect(res => {
@@ -107,7 +108,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, f
 
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
 	this.timeout(10000);
-	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {
 			this.skip();
@@ -116,7 +117,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
 
 	it('should remove token', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/token`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/users/token`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.end(async (err, res) => {
@@ -124,7 +125,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
 					return done(err);
 				}
 
-				const User = await getCollection(process.env.MONGO_DATABASE, 'Users', UserSchema);
+				const User = await getCollection(testDatabase, 'Users', UserSchema);
 
 				User.findById(users[0]._id).then(user => {
 					expect(user.tokens.length).toBe(0);
@@ -136,7 +137,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
 
 	it('should return 401 if token already deleted', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/users/token`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/users/token`)
 			.set('x-auth', `${users[0].tokens[0].token }abf6`)
 			.expect(401)
 			.end(done);

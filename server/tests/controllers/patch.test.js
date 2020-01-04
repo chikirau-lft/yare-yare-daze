@@ -11,16 +11,17 @@ const { items, users, populateItems, populateUsers } = require('../../seed/seed.
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('../../utils/core.utils');
 
+const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function () {
 	this.timeout(10000);
-	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
-	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
+	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
     
 	it('should update document fields', done => {
 		request(app)
-			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[0]._id}`)
+			.patch(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${items[0]._id}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				'array.1': 322,
@@ -40,7 +41,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 	it('should update document fields with MongoDB operations', done => {
 		request(app)
-			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${items[4]._id}`)
+			.patch(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${items[4]._id}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				$push: { array: 700 }
@@ -54,7 +55,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 	it('should return 400 if _id field is invalid', done => {
 		request(app)
-			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/123`)
+			.patch(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/123`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				'array.1': 322,
@@ -68,7 +69,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 	it('should return 404 if document with such _id does not exists', done => {
 		request(app)
-			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/${new ObjectID()}`)
+			.patch(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${new ObjectID()}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				'array.1': 322,
@@ -83,12 +84,12 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 
 describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, function () {
 	this.timeout(10000);
-	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
-	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
+	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
 	it('should update multiple documents specified by filter query', done => {
 		request(app)
-			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/*?filter={"TS": ${items[0].TS}}`)
+			.patch(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/*?filter={"TS": ${items[0].TS}}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				array: 'new array string'
@@ -107,7 +108,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, 
 					return done(err);
 				}
                
-				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const documents = await collection.find({ TS: items[0] });
 
 				documents
@@ -122,7 +123,7 @@ describe(`PATCH /${process.env.APP_PREFIX}/:database/:collection/*?filter=...`, 
 
 	it('should return 400 status if invalid filter obj is spesified', done => {
 		request(app)
-			.patch(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}/*?filter={"TS": ${items[0].TS}`)
+			.patch(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/*?filter={"TS": ${items[0].TS}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				array: 'new array string'

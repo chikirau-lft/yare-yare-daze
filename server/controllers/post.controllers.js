@@ -60,7 +60,7 @@ const add_documents = async (req, res, next) => {
 
 		for (const doc of insertedDocs) {
 			response._embedded.push({
-				href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${req.params.collection}/${doc._id}`
+				href: `/${process.env.APP_PREFIX}/${req.params.database}/${req.params.collection}/${doc._id}`
 			});
 		}
 
@@ -70,7 +70,7 @@ const add_documents = async (req, res, next) => {
 				const data = _.omit(updateDocs[index], ['_id']);
 				bulk.find({ _id: new ObjectID(id) }).update({ $set: data }, { new: true, useFindAndModify: false });
 				response._embedded.push({
-					href: `/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${req.params.collection}/${id}`
+					href: `/${process.env.APP_PREFIX}/${req.params.database}/${req.params.collection}/${id}`
 				});
     
 				counter++;

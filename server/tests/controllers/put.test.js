@@ -10,12 +10,13 @@ const { items, users, populateItems, populateUsers } = require('../../seed/seed.
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('../../utils/core.utils');
 
+const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 	this.timeout(10000);
-	beforeEach(curry(populateItems)(testCollection, CommonSchema, items));
-	beforeEach(curry(populateUsers)('Users', UserSchema, users));
+	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
+	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
     
 	it('should update document if _id is send in request body', done => {
 		const json = {
@@ -25,7 +26,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 		};
 
 		request(app)
-			.put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
+			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send(json)
 			.expect(200)
@@ -37,7 +38,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const documents = await collection.find({});
 				const updated = await collection.findOne({ _id: items[0]._id });
 				updated._doc._id = updated._doc._id.toHexString();
@@ -56,7 +57,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 		};
 
 		request(app)
-			.put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
+			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send(json)
 			.expect(200)
@@ -68,7 +69,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = await getCollection(process.env.MONGO_DATABASE, testCollection, CommonSchema);
+				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const documents = await collection.find({});
 				const inserted = await collection.findOne(res.body);
 
@@ -81,7 +82,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 	it('should return 400 if ObjectId is not valid', done => {
 		request(app)
-			.put(`/${process.env.APP_PREFIX}/${process.env.MONGO_DATABASE}/${testCollection}`)
+			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
 				_id: '132gd',

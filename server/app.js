@@ -1,6 +1,7 @@
 'use strict';
 
-require('./config/config.js');
+// require('./config/config.js');
+require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
