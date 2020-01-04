@@ -1,11 +1,5 @@
 # dependencies
 /node_modules
 
-# iis logs folder
-/iisnode
-
-# https sertificate
-/sertificates
-
-# app logs
-logs.txt
+# logs folder
+/log

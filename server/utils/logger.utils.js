@@ -14,11 +14,10 @@ const log = bunyan.createLogger({
 	name: 'logger_v1',
 	streams: [{
 		level: 'info',
-		stream: process.stdout
+		path: `./log/${process.env.APP_PREFIX}-req.log`
 	}, {
 		level: 'error',
-		stream: process.stdout
-		// path: '/var/tmp/myapp-error.log'
+		path: `./log/${process.env.APP_PREFIX}-error.log`
 	}],
 	serializers: {
 		req: reqSerializer
