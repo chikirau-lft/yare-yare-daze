@@ -57,7 +57,6 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
 When running this application supports next process.env variables located in server/config/config.json file:
 
 - `MONGO_URI`: MongoDB connection URI used to connect to a MongoDB.
-- `MONGO_DATABASE`: MongoDB database used.
 - `DEFAULT_PAGESIZE`: Pagesize returned by HTTP/HTTPS requests.
 - `MAX_PAGESIZE`: Max pagesize returned by HTTP/HTTPS requests.
 - `DEFAULT_PAGENUM`: Number of pages returned by HTTP/HTTPS requests.
