@@ -1,5 +1,6 @@
 'use strict';
 
+const { ObjectID } = require('mongodb');
 const expect = require('expect');
 const request = require('supertest');
 
@@ -17,7 +18,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
     
-	it('should update document if _id is send in request body', done => {
+	it('should update document if _id specified', done => {
 		const json = {
 			_id: items[0]._id.toHexString(),
 			ID: 'updated value',
@@ -25,7 +26,7 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 		};
 
 		request(app)
-			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
+			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${items[0]._id.toHexString()}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send(json)
 			.expect(200)
@@ -44,19 +45,18 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 				expect(documents.length).toBe(items.length);
 				expect(updated._doc).toMatchObject(json);
-
 				done();
 			});
 	});
 
-	it('should create new document if _id field is not specofied in request body', done => {
+	it('should create new document if _id field is not specofied', done => {
 		const json = {
 			ID: 'updated value',
 			old: 'new value'
 		};
 
 		request(app)
-			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
+			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${new ObjectID()}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send(json)
 			.expect(200)
@@ -74,17 +74,15 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 				expect(documents.length).toBe(items.length + 1);
 				expect(inserted._doc).toMatchObject(json);
-
 				done();
 			});
 	});
 
 	it('should return 400 if ObjectId is not valid', done => {
 		request(app)
-			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
+			.put(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/123qwert`)
 			.set('x-auth', users[0].tokens[0].token)
 			.send({
-				_id: '132gd',
 				data: [1, 2, 3]
 			})
 			.expect(400)

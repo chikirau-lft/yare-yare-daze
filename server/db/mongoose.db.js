@@ -9,6 +9,7 @@ mongoose.pluralize(null);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
 
 const connections = {};
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { ObjectID } = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
 const { getCollection } = require('../db/mongoose.db');
@@ -13,29 +13,7 @@ const update_document = async (req, res, next) => {
 		}
 
 		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
-		const document = await collection.findOneAndUpdate({ _id }, req.body);
-
-		if (!document) {
-			return next(notFoundError());
-		}
-
-		return res.status(200).send(document);
-	} catch (err) {
-		return next(err);
-	}
-};
-
-const update_documents = async (req, res, next) => {
-	try {
-		const _id = req.body._id ? req.body._id : new ObjectID(); 
-
-		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
-		const document = await collection.findOneAndUpdate({ _id }, 
-			{ ...req.body } , { upsert: true, useFindAndModify: false, new: true });
-
-		if (!document) {
-			return next();
-		}
+		const document = await collection.findOneAndUpdate({ _id }, req.body, { new: true, upsert: true });
 
 		return res.status(200).send(document);
 	} catch (err) {
@@ -44,6 +22,5 @@ const update_documents = async (req, res, next) => {
 };
 
 module.exports = {
-	update_document,
-	update_documents
+	update_document
 };
