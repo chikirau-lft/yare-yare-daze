@@ -134,6 +134,24 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 				done();
 			});
 	});
+
+	it('should 400 if invalid Object id provided', done => {
+		const data = [{
+			text: 'custom text',
+		}, {
+			_id: '123qwerty',
+			text: 'text 1',
+			number: 2000,
+			TS: 0
+		}];
+
+		request(app)
+			.post(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.send(data)
+			.expect(400)
+			.end(done);
+	});
 });
 
 describe(`POST /${process.env.APP_PREFIX}/:database/users`, function () {
