@@ -46,12 +46,6 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
-				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
-				const documents = await collection.find({
-					_id: { $in: res.body._embedded.map(d => _.last(d.href.split('/'))) }
-				}, { _id: 0 });
-
-				expect(documents.map(d => d.toObject())).toEqual(data);
 				done();
 			});
 	});
@@ -75,11 +69,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 			.send(data)
 			.expect(200)
 			.expect(res => {
-				const _embedded = data.map(d => { 
-					return { href: `/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/${d._id.toHexString()}` };
-				});
 				expect(res.body).toEqual({
-					_embedded,
 					inserted: 0,
 					deleted: 0,
 					modified: data.length,
@@ -93,7 +83,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const documents = await collection.find({
-					_id: { $in: res.body._embedded.map(d => _.last(d.href.split('/'))) }
+					_id: { $in: data.map(d => d._id )}
 				});
 
 				expect(documents.map(d => d.toObject())).toMatchObject(data);
@@ -118,10 +108,10 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 			.expect(200)
 			.expect(res => {
 				expect(res.body).toMatchObject({
-					inserted: 1,
+					inserted: data.filter(d => d._id === undefined).length,
 					deleted: 0,
-					modified: 1,
-					matched: 1
+					modified: data.filter(d => d._id !== undefined).length,
+					matched: data.filter(d => d._id !== undefined).length
 				});
 			})
 			.end(async (err, res) => {
@@ -133,15 +123,9 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 				const count = await collection.countDocuments({});
 				const updated = await collection.find({ _id: _.last(data)._id.toHexString() });
-				const inserted = await collection.find({ 
-					_id: res.body._embedded
-						.filter(d => _.last(d.href.split('/')) !== _.last(data)._id.toHexString())
-						.map(d => _.last(d.href.split('/')))
-				}, { _id: 0 });
 
-				expect(count).toBe(items.length + inserted.length);
+				expect(count).toBe(items.length + data.length - updated.length);
 				expect(updated[0].toObject()).toMatchObject(data[1]);
-				expect(inserted[0].toObject()).toEqual(data[0]);
 				done();
 			});
 	});
