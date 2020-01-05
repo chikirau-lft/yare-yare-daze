@@ -46,6 +46,10 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 					return done(err);
 				}
 
+				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
+				const count = await collection.countDocuments({});
+
+				expect(count).toBe(items.length + data.length);
 				done();
 			});
 	});
@@ -82,11 +86,13 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 				}
 
 				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
+				const count = await collection.countDocuments({});
 				const documents = await collection.find({
 					_id: { $in: data.map(d => d._id )}
 				});
 
 				expect(documents.map(d => d.toObject())).toMatchObject(data);
+				expect(count).toBe(items.length);
 				done();
 			});
 	});
