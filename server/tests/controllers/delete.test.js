@@ -60,14 +60,14 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 	});
 });
 
-describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, function () {
+describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection?filter=...`, function () {
 	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
 	it('should delete multiple documents specified by filter param', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/*?filter={"TS": ${items[0].TS}}`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}?filter={"TS": ${items[0].TS}}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(200)
 			.expect(res => {
@@ -93,7 +93,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, f
 
 	it('should return 400 status if invalid filter obj is spesified', done => {
 		request(app)
-			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}/*?filter="TS": ${items[0].TS}}`)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}?filter="TS": ${items[0].TS}}`)
 			.set('x-auth', users[0].tokens[0].token)
 			.expect(400)
 			.expect(res => {
