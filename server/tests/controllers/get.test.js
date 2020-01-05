@@ -11,9 +11,7 @@ const { UserSchema } = require('../../models/users.models.js');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
 const { curry } = require('../../utils/core.utils.js');
 const { test_timeout } = require('../constants/mocha.constants');
-
-const testDatabase = "mongoAPI_tests";
-const testCollection = 'Qlik_MSDashboard_test';
+const { testDatabase, testCollection } = require('../constants/db.constants');
 
 describe(`GET /${process.env.APP_PREFIX}/${testDatabase}/:collection`, function () {
 	this.timeout(test_timeout);
