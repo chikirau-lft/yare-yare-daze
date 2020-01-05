@@ -10,12 +10,13 @@ const { UserSchema } = require('../../models/users.models');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests');
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('../../utils/core.utils');
+const { test_timeout } = require('../constants/mocha.constants');
 
 const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
     
@@ -62,7 +63,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:database/:collection/:_id`, function
 });
 
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
@@ -107,7 +108,7 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection/*?filter=...`, f
 });
 
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {

@@ -10,12 +10,13 @@ const { UserSchema } = require('./../../models/users.models');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests');
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('../../utils/core.utils');
+const { test_timeout } = require('../constants/mocha.constants');
 
 const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
@@ -138,7 +139,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 });
 
 describe(`POST /${process.env.APP_PREFIX}/:database/users`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {
@@ -198,7 +199,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/users`, function () {
 });
 
 describe(`POST /${process.env.APP_PREFIX}/${testDatabase}/users/login`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {

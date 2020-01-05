@@ -9,12 +9,13 @@ const { UserSchema } = require('./../../models/users.models');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests');
 const { getCollection } = require('../../db/mongoose.db');
 const { curry } = require('../../utils/core.utils');
+const { test_timeout } = require('../constants/mocha.constants');
 
 const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
     

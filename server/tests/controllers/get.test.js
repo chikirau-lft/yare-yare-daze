@@ -10,12 +10,13 @@ const { CommonSchema } = require('../../models/common.models.js');
 const { UserSchema } = require('../../models/users.models.js');
 const { items, users, populateItems, populateUsers } = require('../../seed/seed.tests.js');
 const { curry } = require('../../utils/core.utils.js');
+const { test_timeout } = require('../constants/mocha.constants');
 
 const testDatabase = "mongoAPI_tests";
 const testCollection = 'Qlik_MSDashboard_test';
 
 describe(`GET /${process.env.APP_PREFIX}/${testDatabase}/:collection`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
@@ -430,7 +431,7 @@ describe(`GET /${process.env.APP_PREFIX}/${testDatabase}/:collection`, function 
 });
 
 describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateItems)(testDatabase, testCollection, CommonSchema, items));
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 
@@ -467,7 +468,7 @@ describe(`GET /${process.env.APP_PREFIX}/:database/:collection/:_id`, function (
 });
 
 describe(`GET /${process.env.APP_PREFIX}/users/me`, function () {
-	this.timeout(10000);
+	this.timeout(test_timeout);
 	beforeEach(curry(populateUsers)(testDatabase, 'Users', UserSchema, users));
 	before(function () {
 		if (process.env.JWT_AUTH !== 'true') {

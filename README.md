@@ -2,8 +2,8 @@
 
 Chapi is Express server for Node.js which enables CRUD operations over MongoDB.
 
-
 ## Development server
+
 Run `npm run start` for a dev server. Navigate to `http://localhost:5000/${APP_PREFIX}/:database/:collection`.
 
 Run `npm run start-watch` for a dev server. Navigate to `http://localhost:5000/${APP_PREFIX}/:database/:collection`.
@@ -13,7 +13,7 @@ The app will automatically reload if you change any of the source files.
 
 Run `npm run test` to execute the unit tests via [Supertest](https://github.com/visionmedia/supertest).
 
-## CRUD Actions
+## CRUD Operations:
 
 1. **HTTP GET**. Read data from db using following query params:
    - *filter* - GET `/app/db/col?filter={"qty":{"$gt":50}}`. Allows to specify conditions on the documents. 
@@ -23,18 +23,36 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
    - *keys* - GET `/app/db/col?keys={'item':1}&keys={'status':1}`. Allows you to specify the inclusion/exclusion of fields. 
    - *hint* - GET `/app/db/col?hint={'item':1}`. Allows you to override MongoDB’s query optimization process. 
 
-2. **HTTP POST**. Insert multiple documents. Specifying `_id` field will perform update action:
+2. **HTTP POST**. Bulk insert multiple documents.
 		
         ```
         POST /app/db/col
         
 		[
         	{
-				text: 'text 1',
-				number: 2000
+				"text": "text 1",
+				"number": 2000
 			}, {
-				text: 'text 2',
-				number: 3000
+				"text": "text 2",
+				"number": 3000
+			}
+        ]
+        ```
+
+    Specifying `_id` field will overwrite the document rather that `$set` fields:
+
+         ```
+        POST /app/db/col
+        
+		[
+        	{
+                "_id": "5e10abebece6d800e09e7f99",
+				"text": "text 1",
+				"number": 2000
+			}, {
+                "_id": "5e10d7807f08b51a9c9167fd",
+				"text": "text 2",
+				"number": 3000
 			}
         ]
         ```
