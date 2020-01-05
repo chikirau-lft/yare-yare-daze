@@ -21,7 +21,6 @@ const delete_token = async (req, res, next) => {
 const delete_document = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
-
 		if (!ObjectId.isValid(_id)) {
 			throw new Error(clientErrors.INVALID_ID);
 		}

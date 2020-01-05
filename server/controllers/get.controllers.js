@@ -30,7 +30,6 @@ const get_user = (req, res) => {
 const get_document = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
-
 		if (!ObjectId.isValid(_id)) {
 			throw new Error(clientErrors.INVALID_ID);
 		}
