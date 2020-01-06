@@ -8,6 +8,6 @@ const { update_document, update_documents } = require('../controllers/patch.cont
 const router = express.Router();
 
 router.patch(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, update_document);
-router.patch(`/${process.env.APP_PREFIX}/:database/:collection/*`, authHandler, update_documents);
+router.patch(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, update_documents);
 
 module.exports = router;

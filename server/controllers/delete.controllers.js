@@ -26,7 +26,7 @@ const delete_document = async (req, res, next) => {
 		}
 
 		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
-		const document = await collection.findOneAndRemove({ _id }, { useFindAndModify: false });
+		const document = await collection.findOneAndRemove({ _id });
 
 		if (!document) {
 			return next(notFoundError());

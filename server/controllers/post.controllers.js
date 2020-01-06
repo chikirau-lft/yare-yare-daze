@@ -54,7 +54,7 @@ const add_documents = async (req, res, next) => {
 			if (_id) {
 				bulk.find({ _id: new ObjectID(_id) }).replaceOne(data);
 			} else {
-				bulk.insert(data);
+				bulk.insert(data); // TODO: implement href return
 			}
 
 			counter++;
