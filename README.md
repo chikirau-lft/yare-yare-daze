@@ -1,6 +1,6 @@
-# Chapi
+# yare-yare-daze (やれやれだぜ)
 
-Chapi is Express server for Node.js which enables CRUD operations over MongoDB.
+yyd is Express server for Node.js which enables CRUD operations over MongoDB.
 
 ## Development server
 

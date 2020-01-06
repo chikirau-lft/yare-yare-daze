@@ -1,7 +1,7 @@
 {
-  "name": "mongoapi",
+  "name": "yare-yare-daze",
   "version": "1.0.0",
-  "description": "Rest API for mongoDB",
+  "description": "Yare Yare Rest API for MongoDB daze",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint server/**/*.js",
@@ -10,7 +10,7 @@
     "start": "node index.js",
     "start-watch": "nodemon index.js"
   },
-  "author": "",
+  "author": "chikirau-lft",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",
