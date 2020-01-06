@@ -20,7 +20,6 @@ describe(`PUT /${process.env.APP_PREFIX}/:database/:collection`, function () {
     
 	it('should update document if _id specified', done => {
 		const json = {
-			_id: items[0]._id.toHexString(),
 			ID: 'updated value',
 			old: 'new value'
 		};

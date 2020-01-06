@@ -49,6 +49,7 @@ const delete_documents = async (req, res, next) => {
 		const documents = await collection.deleteMany(filter);
 
 		const response = { ...bulk_response };
+		response._embedded = undefined;
 		response.deleted = documents.n;
 
 		return res.status(200).send(response);
@@ -56,7 +57,6 @@ const delete_documents = async (req, res, next) => {
 		return next(err);
 	}
 };
-
 
 module.exports = {
 	delete_token,

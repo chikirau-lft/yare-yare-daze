@@ -23,7 +23,7 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
    - *keys* - GET `/app/db/col?keys={'item':1}&keys={'status':1}`. Allows you to specify the inclusion/exclusion of fields. 
    - *hint* - GET `/app/db/col?hint={'item':1}`. Allows you to override MongoDB’s query optimization process. 
 
-2. **HTTP POST**. Bulk insert multiple documents.
+2. **HTTP POST**. Insert multiple documents to collection. Response of these calls will contain inserted _id's.
 		
         ```
         POST /app/db/col
@@ -50,14 +50,13 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
 				"text": "text 1",
 				"number": 2000
 			}, {
-                "_id": "5e10d7807f08b51a9c9167fd",
 				"text": "text 2",
 				"number": 3000
 			}
         ]
         ```
 
-3. **HTTP DELETE**. Delete data from database:
+3. **HTTP DELETE**. Delete documents from collection:
 	- delete by id:
 		        
        	```
@@ -66,9 +65,45 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
     - delete using query filter param:
     	
         ```
-        DELETE /app/db/col?filter={'number': 200} - will delete all documents with `number` field of value 200
+        DELETE /app/db/col?filter={'number': 200} - will delete all documents matching filter condition
         ```
 
+4. **HTTP PUT**. Upsert data to collection. PUT request updates the document state depending on JSON body rather than overwrites as POST request. If the document does not exist PUT request creates it:
+
+         ```
+        PUT /app/db/col/5e0f8e63e2f946d8b942ae12
+        
+        {
+            "text": "text 1",
+            "number": 2000
+        }
+        ```
+
+5. **HTTP PATCH**. Update documents in collection. PATCH modifies properties of the document using all update MongoDB methods:
+    	- update by id:
+		        
+         ```
+        PATCH /app/db/col/5e0f8e63e2f946d8b942ae12
+        
+        {
+            "array.1": 400,
+            "$inc": { "TS": 1 },
+            "$push": { "array": 700 },
+            "$unset": { "obj": null }
+        }
+        ```
+        - update using query filter param:
+    	
+        ```
+        PATCH /app/db/col?filter={"number": { $exists: true }}
+
+        {
+            "array.1": 400,
+            "$inc": { "TS": 1 },
+            "$push": { "array": 700 },
+            "$unset": { "obj": null }
+        }
+        ```
 
 ## Environment variables
 
