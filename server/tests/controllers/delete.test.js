@@ -103,6 +103,19 @@ describe(`DELETE ${process.env.APP_PREFIX}/:databse/:collection?filter=...`, fun
 			})
 			.end(done);
 	});
+
+	it('should return 400 status if no filter obj spesified', done => {
+		request(app)
+			.delete(`/${process.env.APP_PREFIX}/${testDatabase}/${testCollection}`)
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(400)
+			.expect(res => {
+				expect(res.body).toMatchObject({
+					statusCode: 400
+				});
+			})
+			.end(done);
+	});
 });
 
 describe(`DELETE ${process.env.APP_PREFIX}/:databse/users/token`, function () {

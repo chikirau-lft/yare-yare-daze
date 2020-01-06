@@ -40,6 +40,9 @@ const delete_document = async (req, res, next) => {
 
 const delete_documents = async (req, res, next) => {
 	try {
+		if (!req.query.filter) {
+			throw new Error(clientErrors.NO_FILTER);
+		}
 		const filter = parseFilter(req.query.filter);
 
 		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
