@@ -16,6 +16,9 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
 ## CRUD Operations:
 
 1. **HTTP GET**. Read data from db using following query params:
+    
+    YYD divides data stored into collections in pages, i..e. only a subset of the collection’s documents can be returned. To control pages and pagesize use `page` and `pagesize` params described below:
+
    - *filter* - GET `/app/db/col?filter={"qty":{"$gt":50}}`. Allows to specify conditions on the documents. 
    - *page* - GET `/app/db/col?page=2`. Allows you to select which page should be returned. 
    - *pagesize* - GET `/app/db/col?pagesize=20`. Allows you to control the number of documents to return.
@@ -110,9 +113,9 @@ Run `npm run test` to execute the unit tests via [Supertest](https://github.com/
 When running this application supports next process.env variables located in server/config/config.json file:
 
 - `MONGO_URI`: MongoDB connection URI used to connect to a MongoDB.
-- `DEFAULT_PAGESIZE`: Pagesize returned by HTTP/HTTPS requests.
-- `MAX_PAGESIZE`: Max pagesize returned by HTTP/HTTPS requests.
-- `DEFAULT_PAGENUM`: Number of pages returned by HTTP/HTTPS requests.
+- `DEFAULT_PAGESIZE`: Pagesize returned by requests.
+- `MAX_PAGESIZE`: Max pagesize returned by requests.
+- `DEFAULT_PAGENUM`: Number of pages returned by requests.
 - `DEFAULT_FILTER`: The filter query parameter.
 - `DEFAULT_SORT`: The sort query parameter.
 - `DEFAULT_KEYS`: The keys query parameter.
