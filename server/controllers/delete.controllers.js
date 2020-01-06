@@ -45,7 +45,7 @@ const delete_documents = async (req, res, next) => {
 		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const documents = await collection.deleteMany(filter);
 
-		const response = bulk_response;
+		const response = { ...bulk_response };
 		response.deleted =  documents.n;
 
 		return res.status(200).send(response);

@@ -39,7 +39,7 @@ const update_documents = async (req, res, next) => {
 		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 		const documents = await collection.updateMany(filter, req.body);
 
-		const response = bulk_response;
+		const response = { ...bulk_response };
 		response.modified = documents.nModified,
 		response.matched = documents.nModified === 0 ? documents.n : 0;
 

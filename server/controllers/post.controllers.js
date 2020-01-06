@@ -75,7 +75,7 @@ const add_documents = async (req, res, next) => {
 				throw new Error(err);
 			}
 
-			const response = bulk_response;
+			const response = { ...bulk_response };
 			response.inserted = result.nInserted;
 			response.matched = result.nMatched;
 			response.modified = result.nModified;
