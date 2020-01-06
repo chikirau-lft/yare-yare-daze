@@ -47,7 +47,11 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 				const collection = await getCollection(testDatabase, testCollection, CommonSchema);
 				const count = await collection.countDocuments({});
+				const documents = await collection.find({
+					_id: { $in: res.body._embedded.map(d => d._id )}
+				});
 
+				expect(documents.map(d => _.omit(d.toObject(), ['_id']))).toEqual(data);
 				expect(count).toBe(items.length + data.length);
 				done();
 			});
@@ -73,6 +77,7 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 			.expect(200)
 			.expect(res => {
 				expect(res.body).toEqual({
+					_embedded: [],
 					inserted: 0,
 					deleted: 0,
 					modified: data.length,
@@ -128,9 +133,13 @@ describe(`POST /${process.env.APP_PREFIX}/:database/:collection`, function () {
 
 				const count = await collection.countDocuments({});
 				const updated = await collection.find({ _id: _.last(data)._id.toHexString() });
+				const documents = await collection.find({
+					_id: { $in: res.body._embedded.map(d => d._id )}
+				});
 
 				expect(count).toBe(items.length + data.length - updated.length);
 				expect(updated[0].toObject()).toMatchObject(data[1]);
+				expect(documents.map(d => _.omit(d.toObject(), ['_id']))[0]).toEqual(data[0]);
 				done();
 			});
 	});

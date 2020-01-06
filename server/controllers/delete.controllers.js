@@ -49,7 +49,7 @@ const delete_documents = async (req, res, next) => {
 		const documents = await collection.deleteMany(filter);
 
 		const response = { ...bulk_response };
-		response.deleted =  documents.n;
+		response.deleted = documents.n;
 
 		return res.status(200).send(response);
 	} catch (err) {

@@ -54,7 +54,7 @@ const add_documents = async (req, res, next) => {
 			if (_id) {
 				bulk.find({ _id: new ObjectID(_id) }).replaceOne(data);
 			} else {
-				bulk.insert(data); // TODO: implement href return
+				bulk.insert(data);
 			}
 
 			counter++;
@@ -76,6 +76,7 @@ const add_documents = async (req, res, next) => {
 			}
 
 			const response = { ...bulk_response };
+			response._embedded = result.getInsertedIds();
 			response.inserted = result.nInserted;
 			response.matched = result.nMatched;
 			response.modified = result.nModified;
