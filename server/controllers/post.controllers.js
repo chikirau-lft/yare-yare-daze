@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
-const { UserSchema } = require('../models/users.models');
+const { UserSchema } = require('../models/users.model');
 const { getCollection } = require('../db/mongoose.db');
 const { bulk_counter_max, bulk_response } = require('../constants/mongoose.constants');
 
