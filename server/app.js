@@ -21,7 +21,7 @@ app
 	.use(cors())
 	.use(helmet())
 	.use(methodsHandler)
-	.use(logger)
+	// .use(logger)
 	.use(require('./routes/get.routes'))
 	.use(require('./routes/post.routes'))
 	.use(require('./routes/put.routes'))
