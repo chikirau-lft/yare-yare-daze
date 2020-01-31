@@ -9,7 +9,7 @@ const { getCollection } = require('../db/mongoose.db');
 const { parseFilter } = require('../utils/parsers.utils.js');
 const { bulk_response } = require('../constants/mongoose.constants');
 
-const delete_token = async (req, res, next) => {
+const deleteToken = async (req, res, next) => {
 	try {
 		await req.user.removeToken(req.token);
 		return res.status(200).send();
@@ -18,7 +18,7 @@ const delete_token = async (req, res, next) => {
 	}
 };
 
-const delete_document = async (req, res, next) => {
+const deleteDocument = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
 		if (!ObjectId.isValid(_id)) {
@@ -38,7 +38,7 @@ const delete_document = async (req, res, next) => {
 	}
 };
 
-const delete_documents = async (req, res, next) => {
+const deleteDocuments = async (req, res, next) => {
 	try {
 		if (!req.query.filter) {
 			throw new Error(clientErrors.NO_FILTER);
@@ -59,7 +59,7 @@ const delete_documents = async (req, res, next) => {
 };
 
 module.exports = {
-	delete_token,
-	delete_document,
-	delete_documents
+	deleteToken,
+	deleteDocument,
+	deleteDocuments
 };

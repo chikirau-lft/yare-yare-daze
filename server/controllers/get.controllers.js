@@ -16,18 +16,18 @@ const {
 	parseHint
 } = require('../utils/parsers.utils.js');
 
-const get_app = (req, res) => {
+const getApp = (req, res) => {
 	return res.status(200).send({
 		statusCode: 200,
 		applicationName: process.env.APP_PREFIX
 	});
 };
 
-const get_user = (req, res) => {
+const getUser = (req, res) => {
 	res.send(req.user);
 };
 
-const get_document = async (req, res, next) => {
+const getDocument = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
 		if (!ObjectId.isValid(_id)) {
@@ -47,7 +47,7 @@ const get_document = async (req, res, next) => {
 	}
 };
 
-const get_documents = async (req, res, next) => {
+const getDocuments = async (req, res, next) => {
 	try {
 		const filter = parseFilter(req.query.filter);
 		const sort = parseSort(req.query.sort);
@@ -81,8 +81,8 @@ const get_documents = async (req, res, next) => {
 };
 
 module.exports = {
-	get_app,
-	get_user,
-	get_document,
-	get_documents
+	getApp,
+	getUser,
+	getDocument,
+	getDocuments
 };

@@ -4,15 +4,15 @@ const express = require('express');
 
 const { authHandler } = require('../middlewares/auth.middlewares');
 const { 
-	delete_token,
-	delete_document,
-	delete_documents 
+	deleteToken,
+	deleteDocument,
+	deleteDocuments 
 } = require('../controllers/delete.controllers');
 
 const router = express.Router();
 
-router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, delete_token);
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, delete_document);
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, delete_documents);
+router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, deleteToken);
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, deleteDocument);
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, deleteDocuments);
 
 module.exports = router;

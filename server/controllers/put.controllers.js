@@ -5,7 +5,7 @@ const { ObjectId } = require('mongodb');
 const { CommonSchema } = require('../models/common.models');
 const { getCollection } = require('../db/mongoose.db');
 
-const update_document = async (req, res, next) => {
+const updateDocument = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
 		if (!ObjectId.isValid(_id)) {
@@ -22,5 +22,5 @@ const update_document = async (req, res, next) => {
 };
 
 module.exports = {
-	update_document
+	updateDocument
 };

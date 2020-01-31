@@ -9,7 +9,7 @@ const { getCollection } = require('../db/mongoose.db');
 const { parseFilter } = require('../utils/parsers.utils');
 const { bulk_response } = require('../constants/mongoose.constants');
 
-const update_document = async (req, res, next) => {
+const updateDocument = async (req, res, next) => {
 	try {
 		const { _id } = req.params;
 		if (!ObjectId.isValid(_id)) {
@@ -29,7 +29,7 @@ const update_document = async (req, res, next) => {
 	}
 };
 
-const update_documents = async (req, res, next) => {
+const updateDocuments = async (req, res, next) => {
 	try {
 		if (!req.query.filter) {
 			throw new Error(clientErrors.NO_FILTER);
@@ -51,6 +51,6 @@ const update_documents = async (req, res, next) => {
 };
 
 module.exports = {
-	update_document,
-	update_documents
+	updateDocument,
+	updateDocuments
 };

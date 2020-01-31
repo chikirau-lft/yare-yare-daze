@@ -8,10 +8,10 @@ const { UserSchema } = require('../models/users.model');
 const { getCollection } = require('../db/mongoose.db');
 const { bulk_counter_max, bulk_response } = require('../constants/mongoose.constants');
 
-const add_user = async (req, res, next) => {
+const addUser = async (req, res, next) => {
 	try {
 		const User = await getCollection(req.params.database, 'Users', UserSchema);
-		const body = _.pick(req.body, ['email', 'username', 'password']);
+		const body = _.pick(req.body, ['email', 'password']);
 		const user = new User(body);
         
 		await user.save();
@@ -24,7 +24,7 @@ const add_user = async (req, res, next) => {
 	}
 };
 
-const authenticate_user = async (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
 	try {
 		const User = await getCollection(req.params.database, 'Users', UserSchema);  
 		const body = _.pick(req.body, ['email', 'password']);
@@ -40,7 +40,7 @@ const authenticate_user = async (req, res, next) => {
 	}
 };
 
-const add_documents = async (req, res, next) => {
+const addDocuments = async (req, res, next) => {
 	try {
 		const collection = await getCollection(req.params.database, req.params.collection, CommonSchema);
 
@@ -90,7 +90,7 @@ const add_documents = async (req, res, next) => {
 };
 
 module.exports = {
-	add_user,
-	authenticate_user,
-	add_documents
+	addUser,
+	authenticateUser,
+	addDocuments
 };
