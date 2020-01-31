@@ -7,6 +7,7 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
 const { clientErrors } = require('../constants/errors.constants');
+const { generateJWT } = require('../utils/jwt.utils');
 
 const UserSchema = new mongoose.Schema({
 	email: {
@@ -26,11 +27,11 @@ const UserSchema = new mongoose.Schema({
 		minlength: 6
 	},
 	tokens: [{
-		access: {
+		accessToken: {
 			type: String,
 			required: true
 		},
-		token: {
+		refreshToken: {
 			type: String,
 			required: true
 		}
@@ -44,15 +45,24 @@ UserSchema.methods.toJSON = function () {
 	return _.pick(userData, ['_id', 'email']);
 };
 
-UserSchema.methods.generateAuthToken = async function () {
+UserSchema.methods.generateTokens = async function () {
 	const user = this;
-	const access = 'auth';
-	const token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.JWT_SECRET).toString();
+	const payload = {
+		_id: user._id.toHexString() 
+	};
+	const accessToken = generateJWT(payload);
+	const refreshToken = generateJWT(payload);
 
-	user.tokens.push({ access, token });
+	user.tokens.push({ 
+		accessToken,
+		refreshToken 
+	});
 	await user.save();
 
-	return token;
+	return {
+		accessToken,
+		refreshToken
+	};
 };
 
 UserSchema.methods.removeToken = function (token) {

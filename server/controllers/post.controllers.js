@@ -16,9 +16,9 @@ const addUser = async (req, res, next) => {
         
 		await user.save();
 		return res
-			.header('x-auth', await user.generateAuthToken())
+			// .header('x-auth', )
 			.status(200)
-			.send(user);
+			.send(await user.generateTokens());
 	} catch (err) {
 		return next(err);
 	}
