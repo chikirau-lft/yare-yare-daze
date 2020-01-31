@@ -5,20 +5,36 @@ const { ObjectID } = require('mongodb');
 
 const { CommonSchema } = require('../models/common.models');
 const { UserSchema } = require('../models/users.model');
+const { SessionSchema } = require('../models/session.model'); 
 const { getCollection } = require('../db/mongoose.db');
 const { bulk_counter_max, bulk_response } = require('../constants/mongoose.constants');
 
 const addUser = async (req, res, next) => {
 	try {
-		const User = await getCollection(req.params.database, 'Users', UserSchema);
-		const body = _.pick(req.body, ['email', 'password']);
-		const user = new User(body);
-        
+		const [
+			User,
+			Session
+		] = await Promise.all([
+			getCollection(req.params.database, 'Users', UserSchema),
+			getCollection(req.params.database, 'Sessions', SessionSchema)
+		]);
+
+		const user = new User(_.pick(req.body, ['email', 'password']));
 		await user.save();
+
+		const tokens = await user.generateTokens();
+		const now = Number(new Date());
+		const session = new Session({
+			userId: user._id,
+			refreshToken: tokens.refreshToken,
+			createdAt: now,
+			updatedAt: now
+		});
+		await session.save();
+
 		return res
-			// .header('x-auth', )
 			.status(200)
-			.send(await user.generateTokens());
+			.send(tokens);
 	} catch (err) {
 		return next(err);
 	}
