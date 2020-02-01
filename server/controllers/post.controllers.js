@@ -35,7 +35,7 @@ const refreshTokens = async (req, res, next) => {
 	try {
 		const refreshToken = req.cookies.r_token;
 		const Users = await getCollection(req.params.database, 'Users', UserSchema);
-		const user = await Users.findByRefreshToken(refreshToken);
+		const user = await Users.findByToken(refreshToken, 'tokens.refreshToken');
 
 		if (user.error) {
 			user.tokens = user.tokens.filter(tokens => tokens.refreshToken !== refreshToken);
@@ -66,14 +66,16 @@ const refreshTokens = async (req, res, next) => {
 const authenticateUser = async (req, res, next) => {
 	try {
 		const User = await getCollection(req.params.database, 'Users', UserSchema);  
-		const body = _.pick(req.body, ['email', 'password']);
-		const user = await User.findByCredentials(body.email, body.password);
-		const token = await user.generateAuthToken();
+		const user = await User.findByCredentials(req.body.email, req.body.password);
+		const createdAt = Number(new Date());
+		const tokens = await user.generateTokens(createdAt, createdAt);
     
 		return res
-			.header('x-auth', token)
 			.status(200)
-			.send(user);
+			.cookie('r_token', tokens.refreshToken, { maxAge: 9000000000, httpOnly: true, secure: true })
+			.send({
+				tokens
+			});
 	} catch (err) {
 		return next(err);
 	}

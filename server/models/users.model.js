@@ -75,43 +75,30 @@ UserSchema.methods.generateTokens = async function (createdAt, updatedAt) {
 	};
 };
 
-/* UserSchema.methods.removeToken = function (token) {
+UserSchema.methods.removeToken = function (token) {
 	const user = this;
 
 	return user.updateOne({
 		$pull: {
 			tokens: {
-				token
+				accessToken: token
 			}
 		}
 	});
-}; */
+};
 
-UserSchema.statics.findByRefreshToken = function (refreshToken) {
-	/* const user = this;
-	let decoded;
-
-	try {
-		decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-	} catch (e) {
-		return Promise.reject(new Error(clientErrors.INVALID_JWT));
-	}
-
-	return user.findOne({
-		// _id: decoded._id,
-		'tokens.refreshToken': refreshToken
-	}); */
+UserSchema.statics.findByToken = function (token, type) {
 	const users = this;
 
 	return users.findOne({ 
-		'tokens.refreshToken': refreshToken 
+		[type]: token 
 	}).then(user => {
 		if (!user) {
 			return Promise.reject(new Error(clientErrors.INVALID_SESSION));
 		}
 
 		try {
-			const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+			const decoded = jwt.verify(token, process.env.JWT_SECRET);
 		} catch (err) {
 			return Promise.resolve({
 				user,
@@ -123,26 +110,26 @@ UserSchema.statics.findByRefreshToken = function (refreshToken) {
 	});
 };
 
-/* UserSchema.statics.findByCredentials = function (email, password) {
+UserSchema.statics.findByCredentials = function (email, password) {
 	const user = this;
 
 	return user.findOne({ email }).then(user => {
 		if (!user) {
-			return Promise.reject(clientErrors.INVALID_CREDENTIALS);
+			return Promise.reject(new Error(clientErrors.INVALID_CREDENTIALS));
 		}
 
 		return new Promise((resolve, reject) => {
 			bcrypt.compare(password, user.password, (err, res) => {
 				if (err || !res) { 
-					reject(clientErrors.INVALID_CREDENTIALS);
+					reject(new Error(clientErrors.INVALID_CREDENTIALS));
 				}
 				resolve(user);
 			});
 		});
 	});
-}; */
+};
 
-/* UserSchema.pre('save', function (next) {
+UserSchema.pre('save', function (next) {
 	const user = this;
 
 	if (user.isModified('password')) {
@@ -161,7 +148,7 @@ UserSchema.statics.findByRefreshToken = function (refreshToken) {
 	} else {
 		return next(); 
 	}
-}); */
+});
 
 module.exports = {
 	UserSchema

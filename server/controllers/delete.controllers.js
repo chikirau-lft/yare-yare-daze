@@ -11,7 +11,7 @@ const { bulk_response } = require('../constants/mongoose.constants');
 
 const deleteToken = async (req, res, next) => {
 	try {
-		await req.user.removeToken(req.token);
+		await req.user.removeToken(req.accessToken); // TODO: remove cookie
 		return res.status(200).send();
 	} catch (err) {
 		return next(err);

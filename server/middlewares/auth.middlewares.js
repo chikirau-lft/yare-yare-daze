@@ -2,23 +2,31 @@
 
 const { UserSchema } = require('../models/users.model');
 const { getCollection } = require('../db/mongoose.db');
-const { errorResponse } = require('../utils/http.utils');
+const { unAuthorizedError } = require('../constants/errors.constants');
 const { defaultHandler } = require('./core.middlewares');
+const { clientErrors } = require('../constants/errors.constants');
 
 const jwtHandler = async (req, res, next) => {
 	try {
-		const User = await getCollection(req.params.database, 'Users', UserSchema);
-
-		const token = req.header('x-auth');
-		const user = await User.findByToken(token);
+		const Users = await getCollection(req.params.database, 'Users', UserSchema);
+		const accessToken = req.header('x-auth');
+		const user = await Users.findByToken(accessToken, 'tokens.accessToken');
 		if (!user) {
-			return errorResponse(res, 401, 'Unauthorized');     
-		}        
+			throw unAuthorizedError();     
+		}
+
+		console.log(user, accessToken)
+
+		if (user.error) {
+			throw new Error(clientErrors.TOKEN_EXPIRED);
+		}
+
 		req.user = user;
-		req.token = token;
+		req.accessToken = accessToken;
+		
 		return next();
-	} catch (e) {
-		return errorResponse(res, 401, 'Unauthorized'); 
+	} catch (err) {
+		return next(err);
 	}
 };
 

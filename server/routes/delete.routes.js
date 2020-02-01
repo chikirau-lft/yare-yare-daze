@@ -11,7 +11,7 @@ const {
 
 const router = express.Router();
 
-router.delete(`/${process.env.APP_PREFIX}/:database/users/token`, authHandler, deleteToken);
+router.delete(`/${process.env.APP_PREFIX}/:database/users/logout`, authHandler, deleteToken);
 router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, deleteDocument);
 router.delete(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, deleteDocuments);
 

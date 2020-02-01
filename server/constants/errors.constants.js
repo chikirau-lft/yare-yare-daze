@@ -10,7 +10,8 @@ const clientErrors = Object.freeze({
 	INVALID_SESSION: 'Session not found.',
 	TOKEN_EXPIRED: 'JWT token expired.',
 	RESOURSE_NOT_FOUND: 'Requested resourse not found.',
-	METHOD_NOT_ALLOWED: 'Method Not Allowed.'
+	METHOD_NOT_ALLOWED: 'Method Not Allowed.',
+	UNAUTHORIZED: 'Unauthorized'
 });
 
 const serverErrors = Object.freeze({
@@ -23,6 +24,7 @@ const error = (status, message) => {
 	return err;
 };
 
+const unAuthorizedError = () => error(401,clientErrors.UNAUTHORIZED);
 const notFoundError = () => error(404, clientErrors.RESOURSE_NOT_FOUND);
 const notAllowedError = () => error(405, clientErrors.METHOD_NOT_ALLOWED);
 const internalError = () => error(500, serverErrors.INTERNAL_ERROR);
@@ -32,5 +34,6 @@ module.exports = {
 	serverErrors,
 	notFoundError,
 	notAllowedError,
-	internalError
+	internalError,
+	unAuthorizedError
 }; 
