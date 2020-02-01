@@ -53,18 +53,21 @@ const UserSchema = new mongoose.Schema({
 	return _.pick(userData, ['_id', 'email']);
 }; */
 
-UserSchema.methods.generateTokens = function () {
-	// const user = this;
+UserSchema.methods.generateTokens = async function (createdAt, updatedAt) {
+	const user = this;
 	const payload = {
-		// _id: user._id.toHexString() 
+		_id: user._id.toHexString() 
 	};
 	const accessToken = generateJWT(payload, 1000);
 	const refreshToken = generateJWT(payload, 6000);
-
-	/* user.tokens.push({ 
+	user.tokens.push({ 
 		accessToken,
-		refreshToken 
-	}); */
+		refreshToken,
+		createdAt,
+		updatedAt
+	});
+
+	await user.save();
 
 	return {
 		accessToken,
