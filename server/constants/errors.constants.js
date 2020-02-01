@@ -7,6 +7,8 @@ const clientErrors = Object.freeze({
 	NO_FILTER: 'No filter param provided',
 	INVALID_CREDENTIALS: 'Provided credentials are not valid.',
 	INVALID_JWT: 'Provided jwt token is not valid or have already expired.',
+	INVALID_SESSION: 'Session not found.',
+	TOKEN_EXPIRED: 'JWT token expired.',
 	RESOURSE_NOT_FOUND: 'Requested resourse not found.',
 	METHOD_NOT_ALLOWED: 'Method Not Allowed.'
 });

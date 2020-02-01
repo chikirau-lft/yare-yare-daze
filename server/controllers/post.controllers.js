@@ -8,12 +8,14 @@ const { UserSchema } = require('../models/users.model');
 const { SessionSchema } = require('../models/session.model'); 
 const { getCollection } = require('../db/mongoose.db');
 const { bulk_counter_max, bulk_response } = require('../constants/mongoose.constants');
+const { clientErrors } = require('../constants/errors.constants');
+const { verifyJWT } = require('../utils/jwt.utils');
 
 const addUser = async (req, res, next) => {
 	try {
 		const [
 			User,
-			Session
+			Sessions
 		] = await Promise.all([
 			getCollection(req.params.database, 'Users', UserSchema),
 			getCollection(req.params.database, 'Sessions', SessionSchema)
@@ -24,7 +26,7 @@ const addUser = async (req, res, next) => {
 
 		const tokens = await user.generateTokens();
 		const now = Number(new Date());
-		const session = new Session({
+		const session = new Sessions({
 			userId: user._id,
 			refreshToken: tokens.refreshToken,
 			createdAt: now,
@@ -34,7 +36,24 @@ const addUser = async (req, res, next) => {
 
 		return res
 			.status(200)
+			.cookie('s_id', session._id.toHexString(), { maxAge: 9000000000, httpOnly: true, secure: true })
+			.cookie('r_token', tokens.refreshToken, { maxAge: 9000000000, httpOnly: true, secure: true })
 			.send(tokens);
+	} catch (err) {
+		return next(err);
+	}
+};
+
+const refreshTokens = async (req,res, next) => {
+	try {
+		const rToken = req.cookies.r_token;
+		const Sessions = await getCollection(req.params.database, 'Sessions', SessionSchema);
+		const session = await Sessions.findByRefreshToken(rToken);
+
+		console.log('Session: ', session);
+		// console.log('Verifying token', verifyJWT(rToken));
+		
+		return res.send({});
 	} catch (err) {
 		return next(err);
 	}
@@ -108,5 +127,6 @@ const addDocuments = async (req, res, next) => {
 module.exports = {
 	addUser,
 	authenticateUser,
-	addDocuments
+	addDocuments,
+	refreshTokens
 };

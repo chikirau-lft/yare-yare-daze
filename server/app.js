@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const helmet = require('helmet');
 
@@ -18,6 +19,7 @@ const {
 const app = express();
 app
 	.use(bodyParser.json())
+	.use(cookieParser())
 	.use(cors())
 	.use(helmet())
 	.use(methodsHandler)

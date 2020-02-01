@@ -50,8 +50,8 @@ UserSchema.methods.generateTokens = async function () {
 	const payload = {
 		_id: user._id.toHexString() 
 	};
-	const accessToken = generateJWT(payload);
-	const refreshToken = generateJWT(payload);
+	const accessToken = generateJWT(payload, process.env.JWT_ACCESS_LIFETIME);
+	const refreshToken = generateJWT(payload, process.env.JWT_REFRESH_LIFETIME);
 
 	user.tokens.push({ 
 		accessToken,
