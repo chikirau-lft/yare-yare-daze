@@ -34,30 +34,37 @@ const UserSchema = new mongoose.Schema({
 		refreshToken: {
 			type: String,
 			required: true
+		},
+		createdAt: {
+			type: Number,
+			required: true
+		},
+		updatedAt: {
+			type: Number,
+			required: true
 		}
 	}]
 });
 
-UserSchema.methods.toJSON = function () {
+/* UserSchema.methods.toJSON = function () {
 	const user = this;
 	const userData = user.toObject();
 
 	return _.pick(userData, ['_id', 'email']);
-};
+}; */
 
-UserSchema.methods.generateTokens = async function () {
-	const user = this;
+UserSchema.methods.generateTokens = function () {
+	// const user = this;
 	const payload = {
-		_id: user._id.toHexString() 
+		// _id: user._id.toHexString() 
 	};
-	const accessToken = generateJWT(payload, process.env.JWT_ACCESS_LIFETIME);
-	const refreshToken = generateJWT(payload, process.env.JWT_REFRESH_LIFETIME);
+	const accessToken = generateJWT(payload, 1000);
+	const refreshToken = generateJWT(payload, 6000);
 
-	user.tokens.push({ 
+	/* user.tokens.push({ 
 		accessToken,
 		refreshToken 
-	});
-	await user.save();
+	}); */
 
 	return {
 		accessToken,
@@ -65,7 +72,7 @@ UserSchema.methods.generateTokens = async function () {
 	};
 };
 
-UserSchema.methods.removeToken = function (token) {
+/* UserSchema.methods.removeToken = function (token) {
 	const user = this;
 
 	return user.updateOne({
@@ -75,26 +82,42 @@ UserSchema.methods.removeToken = function (token) {
 			}
 		}
 	});
-};
+}; */
 
-UserSchema.statics.findByToken = function (token) {
-	const user = this;
+UserSchema.statics.findByRefreshToken = function (refreshToken) {
+	/* const user = this;
 	let decoded;
 
 	try {
-		decoded = jwt.verify(token, process.env.JWT_SECRET);
+		decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
 	} catch (e) {
-		return Promise.reject(clientErrors.INVALID_JWT);
+		return Promise.reject(new Error(clientErrors.INVALID_JWT));
 	}
 
 	return user.findOne({
-		_id: decoded._id,
-		'tokens.token': token,
-		'tokens.access': 'auth'
+		// _id: decoded._id,
+		'tokens.refreshToken': refreshToken
+	}); */
+	const users = this;
+	return users.findOne({ refreshToken }).then(user => {
+		if (!user) {
+			return Promise.reject(new Error(clientErrors.INVALID_SESSION));
+		}
+
+		try {
+			const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+			return Promise.resolve(user);
+		} catch (err) {
+			// sessions.deleteOne({ refreshToken });
+			// return Promise.reject(new Error(clientErrors.TOKEN_EXPIRED));
+			return Promise.resolve(null);
+		}
+
+		
 	});
 };
 
-UserSchema.statics.findByCredentials = function (email, password) {
+/* UserSchema.statics.findByCredentials = function (email, password) {
 	const user = this;
 
 	return user.findOne({ email }).then(user => {
@@ -111,9 +134,9 @@ UserSchema.statics.findByCredentials = function (email, password) {
 			});
 		});
 	});
-};
+}; */
 
-UserSchema.pre('save', function (next) {
+/* UserSchema.pre('save', function (next) {
 	const user = this;
 
 	if (user.isModified('password')) {
@@ -132,7 +155,7 @@ UserSchema.pre('save', function (next) {
 	} else {
 		return next(); 
 	}
-});
+}); */
 
 module.exports = {
 	UserSchema
