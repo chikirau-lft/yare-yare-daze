@@ -102,21 +102,24 @@ UserSchema.statics.findByRefreshToken = function (refreshToken) {
 		'tokens.refreshToken': refreshToken
 	}); */
 	const users = this;
-	return users.findOne({ refreshToken }).then(user => {
+
+	return users.findOne({ 
+		'tokens.refreshToken': refreshToken 
+	}).then(user => {
 		if (!user) {
 			return Promise.reject(new Error(clientErrors.INVALID_SESSION));
 		}
 
 		try {
 			const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-			return Promise.resolve(user);
 		} catch (err) {
-			// sessions.deleteOne({ refreshToken });
-			// return Promise.reject(new Error(clientErrors.TOKEN_EXPIRED));
-			return Promise.resolve(null);
+			return Promise.resolve({
+				user,
+				error: clientErrors.TOKEN_EXPIRED
+			});
 		}
 
-		
+		return Promise.resolve(user);
 	});
 };
 

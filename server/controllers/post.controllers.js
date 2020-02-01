@@ -33,7 +33,31 @@ const addUser = async (req, res, next) => {
 
 const refreshTokens = async (req, res, next) => {
 	try {
+		const refreshToken = req.cookies.r_token;
+		const Users = await getCollection(req.params.database, 'Users', UserSchema);
+		const user = await Users.findByRefreshToken(refreshToken);
 
+		if (user.error) {
+			user.tokens = user.tokens.filter(tokens => tokens.refreshToken !== refreshToken);
+			await user.save();
+	
+			throw new Error(clientErrors.TOKEN_EXPIRED);
+		}
+
+		const index = user.tokens.findIndex(tokens => tokens.refreshToken === refreshToken);
+		const createdAt = user.tokens[index].createdAt;
+		const updatedAt = Number(new Date());
+		user.tokens = user.tokens.filter((token, i) => i !== index);
+		await user.save();
+
+		const tokens = await user.generateTokens(createdAt, updatedAt);
+
+		return res
+			.status(200)
+			.cookie('r_token', tokens.refreshToken, { maxAge: 9000000000, httpOnly: true, secure: true })
+			.send({
+				tokens
+			});
 	} catch (err) {
 		return next(err);
 	}
