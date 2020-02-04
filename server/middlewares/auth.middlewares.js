@@ -6,30 +6,6 @@ const { unAuthorizedError } = require('../constants/errors.constants');
 const { defaultHandler } = require('./core.middlewares');
 const { clientErrors } = require('../constants/errors.constants');
 
-const jwtHandler = async (req, res, next) => {
-	try {
-		const Users = await getCollection(req.params.database, 'Users', UserSchema);
-		const accessToken = req.header('x-auth');
-		const user = await Users.findByToken(accessToken, 'tokens.accessToken');
-		if (!user) {
-			throw unAuthorizedError();     
-		}
-
-		console.log(user, accessToken)
-
-		if (user.error) {
-			throw new Error(clientErrors.TOKEN_EXPIRED);
-		}
-
-		req.user = user;
-		req.accessToken = accessToken;
-		
-		return next();
-	} catch (err) {
-		return next(err);
-	}
-};
-
 const jwtAccessHandler = async (req, res, next) => {
 	try {
 		const Users = await getCollection(req.params.database, 'Users', UserSchema);
@@ -79,13 +55,11 @@ const jwtRefreshHandler = async (req, res, next) => {
 };
 
 const isAuth = process.env.JWT_AUTH === 'true';
-const authHandler = isAuth ? jwtHandler : defaultHandler;
 const accessHandler = isAuth ? jwtAccessHandler : defaultHandler;
 const refreshHandler = isAuth ? jwtRefreshHandler : defaultHandler;
 
-module.exports = { 
-	jwtHandler,
-	authHandler,
+module.exports = {
+	isAuth,
 	accessHandler,
 	refreshHandler
 };

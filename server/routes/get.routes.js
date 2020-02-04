@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-const { authHandler, accessHandler } = require('../middlewares/auth.middlewares');
+const { accessHandler } = require('../middlewares/auth.middlewares');
 const {
 	getApp,
 	getUser,

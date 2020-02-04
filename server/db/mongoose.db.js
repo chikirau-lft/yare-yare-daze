@@ -27,7 +27,6 @@ const getCollection = async (dbName, colName, schema) => {
 		const db = await getDatabaseConnection(dbName);
 		return db.model(colName, schema);
 	} catch (err) {
-		console.log(err)
 		throw internalError();
 	}
 };

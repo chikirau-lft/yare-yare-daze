@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-const { authHandler } = require('../middlewares/auth.middlewares');
+const { accessHandler } = require('../middlewares/auth.middlewares');
 const { 
 	deleteToken,
 	deleteDocument,
@@ -11,8 +11,8 @@ const {
 
 const router = express.Router();
 
-router.delete(`/${process.env.APP_PREFIX}/:database/users/logout`, authHandler, deleteToken);
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, deleteDocument);
-router.delete(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, deleteDocuments);
+router.delete(`/${process.env.APP_PREFIX}/:database/users/logout`, accessHandler, deleteToken);
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, accessHandler, deleteDocument);
+router.delete(`/${process.env.APP_PREFIX}/:database/:collection`, accessHandler, deleteDocuments);
 
 module.exports = router;

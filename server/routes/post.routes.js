@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-const { authHandler } = require('../middlewares/auth.middlewares');
+const { accessHandler } = require('../middlewares/auth.middlewares');
 const {
 	addUser,
 	authenticateUser,
@@ -15,6 +15,6 @@ const router = express.Router();
 router.post(`/${process.env.APP_PREFIX}/:database/users`, addUser);
 router.post(`/${process.env.APP_PREFIX}/:database/users/refresh-token`, refreshTokens);
 router.post(`/${process.env.APP_PREFIX}/:database/users/login`, authenticateUser);
-router.post(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, addDocuments);
+router.post(`/${process.env.APP_PREFIX}/:database/:collection`, accessHandler, addDocuments);
 
 module.exports = router;
