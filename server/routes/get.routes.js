@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-const { authHandler } = require('../middlewares/auth.middlewares');
+const { authHandler, accessHandler } = require('../middlewares/auth.middlewares');
 const {
 	getApp,
 	getUser,
@@ -13,8 +13,8 @@ const {
 const router = express.Router();
 
 router.get(`/${process.env.APP_PREFIX}`, getApp);
-router.get(`/${process.env.APP_PREFIX}/:database/users/me`, authHandler, getUser);
-router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, authHandler, getDocument);
-router.get(`/${process.env.APP_PREFIX}/:database/:collection`, authHandler, getDocuments);
+router.get(`/${process.env.APP_PREFIX}/:database/users/me`, accessHandler, getUser);
+router.get(`/${process.env.APP_PREFIX}/:database/:collection/:_id`, accessHandler, getDocument);
+router.get(`/${process.env.APP_PREFIX}/:database/:collection`, accessHandler, getDocuments);
 
 module.exports = router;

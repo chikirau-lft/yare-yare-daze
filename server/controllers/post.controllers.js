@@ -8,7 +8,6 @@ const { UserSchema } = require('../models/users.model');
 const { getCollection } = require('../db/mongoose.db');
 const { bulk_counter_max, bulk_response } = require('../constants/mongoose.constants');
 const { clientErrors } = require('../constants/errors.constants');
-const { verifyJWT } = require('../utils/jwt.utils');
 
 const addUser = async (req, res, next) => {
 	try {

@@ -49,6 +49,7 @@ const getDocument = async (req, res, next) => {
 
 const getDocuments = async (req, res, next) => {
 	try {
+		
 		const filter = parseFilter(req.query.filter);
 		const sort = parseSort(req.query.sort);
 		const pagesize = parsePagesize(req.query.pagesize);

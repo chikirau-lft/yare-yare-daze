@@ -46,20 +46,13 @@ const UserSchema = new mongoose.Schema({
 	}]
 });
 
-/* UserSchema.methods.toJSON = function () {
-	const user = this;
-	const userData = user.toObject();
-
-	return _.pick(userData, ['_id', 'email']);
-}; */
-
 UserSchema.methods.generateTokens = async function (createdAt, updatedAt) {
 	const user = this;
 	const payload = {
 		_id: user._id.toHexString() 
 	};
-	const accessToken = generateJWT(payload, 1000);
-	const refreshToken = generateJWT(payload, 6000);
+	const accessToken = generateJWT(payload, Number(process.env.JWT_ACCESS_LIFETIME));
+	const refreshToken = generateJWT(payload, Number(process.env.JWT_REFRESH_LIFETIME));
 	user.tokens.push({ 
 		accessToken,
 		refreshToken,
