@@ -37,18 +37,15 @@ const refreshTokens = async (req, res, next) => {
 		const user = await Users.findByToken(refreshToken, 'tokens.refreshToken');
 
 		if (user.error) {
-			user.tokens = user.tokens.filter(tokens => tokens.refreshToken !== refreshToken);
-			await user.save();
-	
+			await user.user.removeToken(refreshToken, 'refreshToken');
 			throw new Error(clientErrors.TOKEN_EXPIRED);
 		}
 
 		const index = user.tokens.findIndex(tokens => tokens.refreshToken === refreshToken);
 		const createdAt = user.tokens[index].createdAt;
 		const updatedAt = Number(new Date());
-		user.tokens = user.tokens.filter((token, i) => i !== index);
-		await user.save();
-
+		
+		await user.removeToken(refreshToken, 'refreshToken');
 		const tokens = await user.generateTokens(createdAt, updatedAt);
 
 		return res

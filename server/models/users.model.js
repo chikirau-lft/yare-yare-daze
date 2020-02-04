@@ -68,13 +68,13 @@ UserSchema.methods.generateTokens = async function (createdAt, updatedAt) {
 	};
 };
 
-UserSchema.methods.removeToken = function (token) {
+UserSchema.methods.removeToken = function (token, type) {
 	const user = this;
 
 	return user.updateOne({
 		$pull: {
 			tokens: {
-				accessToken: token
+				[type]: token
 			}
 		}
 	});

@@ -22,8 +22,6 @@ const jwtAccessHandler = async (req, res, next) => {
 
 		req.user = user;
 		req.accessToken = accessToken;
-		
-		console.log(accessToken, user);
 
 		return next();
 	} catch (err) {
@@ -34,7 +32,7 @@ const jwtAccessHandler = async (req, res, next) => {
 const jwtRefreshHandler = async (req, res, next) => {
 	try {
 		const Users = await getCollection(req.params.database, 'Users', UserSchema);
-		const refreshToken = req.cookies.r_token
+		const refreshToken = req.cookies.r_token;
 		const user = await Users.findByToken(refreshToken, 'tokens.refreshToken');
 		
 		if (!user) {
